@@ -2,12 +2,15 @@
 * {
   font-family: "Inter", sans-serif;
 }
-
+body {
+  background: #E4DEF7;
+}
 .rbc-event {
   padding: 0 !important;
   font-size: 12px;
 }
 .rbc-calendar {
+  background-color: white;
   border: 2px solid rgba(188, 179, 179, 0.301);
   padding: 25px;
   border-radius: 10px;
