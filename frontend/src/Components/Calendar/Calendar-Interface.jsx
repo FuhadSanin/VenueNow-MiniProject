@@ -1,9 +1,10 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Calendar, momentLocalizer } from "react-big-calendar"
 import moment from "moment"
 import "./index.css"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import cec from "../../Assets/cec.png"
+import slotService from "../../Services/service.js"
 
 const localizer = momentLocalizer(moment)
 
@@ -15,10 +16,32 @@ const CalendarInterface = () => {
   const [eventInfo, setEventInfo] = useState({
     eventTitle: "",
     venue: "",
-    startTime: "",
-    endTime: "",
+    startDate: "",
+    endDate: "",
   })
 
+  useEffect(() => {
+    retrieveSlots()
+  }, [])
+
+  const retrieveSlots = () => {
+    slotService
+      .getAllSlots()
+      .then(response => {
+        const modifiedSlots = response.data.slots.map(slot => ({
+          ...slot,
+          start: moment(slot.start).toDate(),
+          end: moment(slot.end).toDate(),
+        }))
+        setEvents(modifiedSlots)
+        console.log(modifiedSlots)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  
   const handleSelectSlot = slotInfo => {
     setShowModal(true)
     setSelectedDate(slotInfo.start)
@@ -36,7 +59,7 @@ const CalendarInterface = () => {
     })
   }
 
-  const saveEvent = () => {
+  const saveEvent = async () => {
     if (
       eventInfo.eventTitle &&
       selectedDate &&
@@ -72,7 +95,7 @@ const CalendarInterface = () => {
         )
       })
 
-      if (hasClash) {
+      if (hasClash && !selectEvent) {
         alert(
           "There is a clash with another event in the same hall at the same time."
         )
@@ -93,12 +116,23 @@ const CalendarInterface = () => {
         setEvents(updatedEvents)
       } else {
         const newEvent = {
-          title: eventInfo.eventTitle,
-          start: startDateTime,
-          end: endDateTime,
+          eventTitle: eventInfo.eventTitle,
+          startDate: startDateTime,
+          endDate: endDateTime,
           venue: eventInfo.venue,
         }
-        setEvents([...events, newEvent])
+        console.log(newEvent)
+        if (
+          newEvent.eventTitle &&
+          newEvent.startDate &&
+          newEvent.endDate &&
+          newEvent.venue
+        ) {
+          const response = await slotService.createSlot(newEvent)
+          console.log(response.data)
+        } else {
+          console.log("error")
+        }
       }
       setShowModal(false)
       setEventInfo({

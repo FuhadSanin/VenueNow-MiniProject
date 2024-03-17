@@ -17,20 +17,20 @@ export default class slotsDAO {
     try {
       const slotsList = await slots.find().toArray()
       const totalNumSlots = slotsList.length
-      return { slotsList, totalNumSlots }
+      return { slotsList: slotsList, totalNumSlots }
     } catch (e) {
       console.error(`Unable to get slots: ${e}`)
       return { slotsList: [], totalNumSlots: 0 }
     }
   }
 
-  static async createSlot(eventTitle, venue, startDate, endDate) {
+  static async createSlot(title, venue, start, end) {
     try {
       const slot = {
-        eventTitle: eventTitle,
+        title: title,
         venue: venue,
-        startDate: startDate,
-        endDate: endDate,
+        start: start,
+        end: end,
       }
       return await slots.insertOne(slot)
     } catch (e) {

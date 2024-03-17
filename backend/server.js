@@ -4,6 +4,7 @@ import cors from "cors"
 import MongoDB from "mongodb"
 import slotsrouter from "./api/slots.routes.js"
 import slotsDAO from "./dao/slotsDAO.js"
+import usersDAO from "./dao/usersDAO.js"
 
 dotenv.config()
 
@@ -21,6 +22,7 @@ const MongoClient = MongoDB.MongoClient
 MongoClient.connect(process.env.DATABASE_URI)
   .then(async client => {
     await slotsDAO.injectDB(client)
+    await usersDAO.injectDB(client)
     app.listen(PORT, () => {
       console.log(`http://localhost:${PORT}`)
     })

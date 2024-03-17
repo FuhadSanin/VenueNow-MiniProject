@@ -12,16 +12,11 @@ export default class slotsController {
 
   static async apiCreateSlot(req, res, next) {
     try {
-      const eventTitle = req.body.eventTitle
+      const title = req.body.eventTitle
       const venue = req.body.venue
-      const startDate = req.body.startDate
-      const endDate = req.body.endDate
-      const slot = await slotsDAO.createSlot(
-        eventTitle,
-        venue,
-        startDate,
-        endDate
-      )
+      const start = req.body.startDate
+      const end = req.body.endDate
+      const slot = await slotsDAO.createSlot(title, venue, start, end)
       res.json({ status: "success" })
     } catch (e) {
       res.status(500).json({ error: e.message })
