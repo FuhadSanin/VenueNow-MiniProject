@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react"
+
+import slotService from "../../Services/service.js"
+
 import { Calendar, momentLocalizer } from "react-big-calendar"
 import moment from "moment"
 import "./index.css"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import cec from "../../Assets/cec.png"
-import slotService from "../../Services/service.js"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 const localizer = momentLocalizer(moment)
 
@@ -41,7 +45,6 @@ const CalendarInterface = () => {
       })
   }
 
-  
   const handleSelectSlot = slotInfo => {
     setShowModal(true)
     setSelectedDate(slotInfo.start)
@@ -95,8 +98,8 @@ const CalendarInterface = () => {
         )
       })
 
-      if (hasClash && !selectEvent) {
-        alert(
+      if (hasClash) {
+        toast.error(
           "There is a clash with another event in the same hall at the same time."
         )
         return
@@ -163,7 +166,7 @@ const CalendarInterface = () => {
       return (
         <div
           style={{
-            background: "violet",
+            background: "#AAA0D9",
             color: "black",
             height: "100%",
             width: "100%",
