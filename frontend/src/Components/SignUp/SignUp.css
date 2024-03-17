@@ -4,7 +4,13 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
+.signup-container{
+  display: flex;
+  justify-content: center;
+}
 .wrapper {
+
   width: 330px;
   height: 400px;
   padding: 2rem 1rem;
@@ -39,7 +45,7 @@
   width: 90%;
   color: #fff;
   cursor: pointer;
-  background: #9baae3;
+  background: var(--first-color);
 }
 .wrapper button:hover {
   background: #879ced;
