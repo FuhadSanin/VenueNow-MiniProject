@@ -1,40 +1,42 @@
-import React, { useState } from "react"
-import { Calendar, momentLocalizer } from "react-big-calendar"
-import moment from "moment"
-import "./index.css"
-import "react-big-calendar/lib/css/react-big-calendar.css"
-import cec from "../../Assets/cec.png"
+import React, { useState } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
+import "./index.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import cec from "../../Assets/cec.png";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 const CalendarInterface = () => {
-  const [events, setEvents] = useState([])
-  const [showModal, setShowModal] = useState(false)
-  const [selectedDate, setSelectedDate] = useState(null)
-  const [selectEvent, setSelectEvent] = useState(null)
+  const [events, setEvents] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectEvent, setSelectEvent] = useState(null);
   const [eventInfo, setEventInfo] = useState({
     eventTitle: "",
     venue: "",
     startTime: "",
     endTime: "",
-  })
+  });
 
-  const handleSelectSlot = slotInfo => {
-    setShowModal(true)
-    setSelectedDate(slotInfo.start)
-    setSelectEvent(null)
-  }
+  const handleSelectSlot = (slotInfo) => {
+    setShowModal(true);
+    setSelectedDate(slotInfo.start);
+    setSelectEvent(null);
+  };
 
-  const handleSelectedEvent = event => {
-    setShowModal(true)
-    setSelectEvent(event)
+  const handleSelectedEvent = (event) => {
+    setShowModal(true);
+    setSelectEvent(event);
     setEventInfo({
       eventTitle: event.title,
       venue: event.venue,
       startTime: moment(event.start).format("HH:mm"),
       endTime: moment(event.end).format("HH:mm"),
-    })
-  }
+    });
+  };
 
   const saveEvent = () => {
     if (
@@ -49,18 +51,18 @@ const CalendarInterface = () => {
           hour: parseInt(eventInfo.startTime.split(":")[0]),
           minute: parseInt(eventInfo.startTime.split(":")[1]),
         })
-        .toDate()
+        .toDate();
       const endDateTime = moment(selectedDate)
         .set({
           hour: parseInt(eventInfo.endTime.split(":")[0]),
           minute: parseInt(eventInfo.endTime.split(":")[1]),
         })
-        .toDate()
+        .toDate();
 
       // Check for clash
-      const hasClash = events.some(event => {
-        const eventStartTime = moment(event.start)
-        const eventEndTime = moment(event.end)
+      const hasClash = events.some((event) => {
+        const eventStartTime = moment(event.start);
+        const eventEndTime = moment(event.end);
         return (
           event.venue === eventInfo.venue &&
           ((eventStartTime.isBefore(startDateTime) &&
@@ -69,14 +71,14 @@ const CalendarInterface = () => {
               eventEndTime.isAfter(endDateTime)) ||
             (eventStartTime.isSameOrAfter(startDateTime) &&
               eventEndTime.isSameOrBefore(endDateTime)))
-        )
-      })
+        );
+      });
 
       if (hasClash) {
-        alert(
+        toast.error(
           "There is a clash with another event in the same hall at the same time."
-        )
-        return
+        );
+        return;
       }
 
       if (selectEvent) {
@@ -86,50 +88,50 @@ const CalendarInterface = () => {
           venue: eventInfo.venue,
           start: startDateTime,
           end: endDateTime,
-        }
-        const updatedEvents = events.map(event =>
+        };
+        const updatedEvents = events.map((event) =>
           event === selectEvent ? updatedEvent : event
-        )
-        setEvents(updatedEvents)
+        );
+        setEvents(updatedEvents);
       } else {
         const newEvent = {
           title: eventInfo.eventTitle,
           start: startDateTime,
           end: endDateTime,
           venue: eventInfo.venue,
-        }
-        setEvents([...events, newEvent])
+        };
+        setEvents([...events, newEvent]);
       }
-      setShowModal(false)
+      setShowModal(false);
       setEventInfo({
         eventTitle: "",
         venue: "",
         startTime: "",
         endTime: "",
-      })
-      console.log(events)
+      });
+      console.log(events);
     }
-  }
+  };
 
   const deleteEvents = () => {
     if (selectEvent) {
-      const updatedEvents = events.filter(event => event !== selectEvent)
-      setEvents(updatedEvents)
-      setShowModal(false)
+      const updatedEvents = events.filter((event) => event !== selectEvent);
+      setEvents(updatedEvents);
+      setShowModal(false);
       setEventInfo({
         eventTitle: "",
         venue: "",
         startTime: "",
         endTime: "",
-      })
+      });
     }
-  }
+  };
   const components = {
-    event: props => {
+    event: (props) => {
       return (
         <div
           style={{
-            background: "violet",
+            background: "#AAA0D9",
             color: "black",
             height: "100%",
             width: "100%",
@@ -148,9 +150,9 @@ const CalendarInterface = () => {
             <p style={{ margin: "0" }}>{props.event.venue}</p>
           </div>
         </div>
-      )
+      );
     },
-  }
+  };
 
   return (
     <div style={{ height: "700px" }}>
@@ -192,13 +194,13 @@ const CalendarInterface = () => {
                   type="button"
                   className="btn-close"
                   onClick={() => {
-                    setShowModal(false)
+                    setShowModal(false);
                     setEventInfo({
                       eventTitle: "",
                       venue: "",
                       startTime: "",
                       endTime: "",
-                    })
+                    });
                   }}
                 ></button>
               </div>
@@ -211,7 +213,7 @@ const CalendarInterface = () => {
                   className="form-control"
                   id="eventTitle"
                   value={eventInfo.eventTitle}
-                  onChange={e =>
+                  onChange={(e) =>
                     setEventInfo({ ...eventInfo, eventTitle: e.target.value })
                   }
                 />
@@ -222,7 +224,7 @@ const CalendarInterface = () => {
                   className="form-select"
                   id="venue"
                   value={eventInfo.venue}
-                  onChange={e =>
+                  onChange={(e) =>
                     setEventInfo({ ...eventInfo, venue: e.target.value })
                   }
                 >
@@ -239,7 +241,7 @@ const CalendarInterface = () => {
                   className="form-control"
                   id="startTime"
                   value={eventInfo.startTime}
-                  onChange={e =>
+                  onChange={(e) =>
                     setEventInfo({ ...eventInfo, startTime: e.target.value })
                   }
                 />
@@ -251,7 +253,7 @@ const CalendarInterface = () => {
                   className="form-control"
                   id="endTime"
                   value={eventInfo.endTime}
-                  onChange={e =>
+                  onChange={(e) =>
                     setEventInfo({ ...eventInfo, endTime: e.target.value })
                   }
                 />
@@ -279,7 +281,7 @@ const CalendarInterface = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default CalendarInterface
+export default CalendarInterface;
