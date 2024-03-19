@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react"
-
 import slotService from "../../Services/service.js"
-
 import { Calendar, momentLocalizer } from "react-big-calendar"
 import moment from "moment"
 import "./index.css"
@@ -132,7 +130,7 @@ const CalendarInterface = () => {
           newEvent.venue
         ) {
           const response = await slotService.createSlot(newEvent)
-          console.log(response.data)
+          toast.success("Event has been Added successfully!")
         } else {
           console.log("error")
         }
@@ -150,15 +148,28 @@ const CalendarInterface = () => {
 
   const deleteEvents = () => {
     if (selectEvent) {
-      const updatedEvents = events.filter(event => event !== selectEvent)
-      setEvents(updatedEvents)
-      setShowModal(false)
-      setEventInfo({
-        eventTitle: "",
-        venue: "",
-        startTime: "",
-        endTime: "",
-      })
+      const confirmation = window.confirm(
+        "Are you sure you want to delete this event?"
+      )
+      if (confirmation) {
+        slotService
+          .deleteSlot(selectEvent._id)
+          .then(response => {
+            setEvents(response.data.slots)
+            setShowModal(false)
+            setEventInfo({
+              eventTitle: "",
+              venue: "",
+              startTime: "",
+              endTime: "",
+            })
+            toast.success("Event has been deleted successfully!")
+          })
+          .catch(error => {
+            console.log(error)
+            toast.error("Error occurred while deleting the event.")
+          })
+      }
     }
   }
   const components = {

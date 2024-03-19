@@ -1,31 +1,26 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "./About.css"
-import {
-  AiOutlineSchedule,
-  AiOutlineUser,
-  AiOutlineMessage,
-  AiOutlineFolder,
-  AiOutlineBarChart,
-  AiOutlineLogout,
-} from "react-icons/ai"
+import { Link, useNavigate, Routes, Route } from "react-router-dom"
+import { toast } from "react-toastify"
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
 import { IoReorderThreeOutline } from "react-icons/io5"
 import { BiNotepad } from "react-icons/bi"
 import { SlCalender } from "react-icons/sl"
-import CalendarInterface from "../Calendar/Calendar-Interface"
-import { Link } from "react-router-dom"
-import { Routes, Route } from "react-router-dom"
-import SignUp from "../SignUp/SignUp"
-import ieee from "../../Assets/ieee.png"
-import iedc from "../../Assets/iedc.png"
-import nss from "../../Assets/nss.png"
-import arc from "../../Assets/arc.png"
-import logo from "../../Assets/logo.png"
 import { PiCalendarCheckFill } from "react-icons/pi"
 import { IoMdAdd } from "react-icons/io"
+import CalendarInterface from "../Calendar/Calendar-Interface"
+import SignUp from "../SignUp/SignUp"
+import { ieee, iedc, nss, arc, logo } from "../../Assets"
+
+const LOCAL_STORAGE_KEY = "loginuser"
 
 function About() {
+  const navigate = useNavigate()
   const [showNav, setShowNav] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(true)
+
+  const [authenticated, setAuthenticated] = useState(false)
+  const [loginuser, setLoginUser] = useState(null)
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed)
@@ -47,13 +42,44 @@ function About() {
     e.target.classList.add("active")
   }
 
+  useEffect(() => {
+    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (storedLoginUser) {
+      setLoginUser(JSON.parse(storedLoginUser))
+    } else {
+      setLoginUser(null)
+    }
+  }, [loginuser])
+
+  useEffect(() => {
+    if (loginuser !== null) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser))
+    }
+  }, [loginuser])
+
+  const handleSignOut = () => {
+    const shouldSignOut = window.confirm("Are you sure you want to sign out?")
+    if (shouldSignOut) {
+      toast.success("You have been signed out successfully!")
+      setLoginUser(null)
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+      navigate("/sign")
+    } else {
+      toast.info("Sign out canceled.")
+    }
+  }
+
   return (
     <div id="body-pd">
       <header className="header" id="header">
         <div className="header_toggle" onClick={toggleNavbar}>
-          <IoReorderThreeOutline />{" "}
+          <IoReorderThreeOutline />
         </div>
-        Hey, Nikhila
+        {loginuser ? (
+          <p onClick={handleSignOut}>Logout, {loginuser}</p>
+        ) : (
+          <Link to={"/sign"}>Sign In to book events</Link>
+        )}
         <div className="header_img">
           <img src={logo} alt="" />
         </div>
@@ -76,7 +102,7 @@ function About() {
                 aria-expanded={!isCollapsed}
                 aria-controls="collapseExample"
               >
-                <BiNotepad /> {/* Use the AiOutlineUser icon */}
+                <BiNotepad />
                 <span className="nav_name">Instructions</span>
               </a>
               <a
@@ -107,11 +133,6 @@ function About() {
                   </span>
                 </div>
               </a>
-
-              <Link to={"/sign"} className="nav_link" onClick={setActiveLink}>
-                <AiOutlineUser /> {/* Use the AiOutlineUser icon */}
-                <span className="nav_name">SignUp</span>
-              </Link>
               <Link to={"/"} className="nav_link" onClick={setActiveLink}>
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
@@ -134,16 +155,32 @@ function About() {
               </Link>
             </div>
           </div>
-          <a href="#" className="nav_link" onClick={setActiveLink}>
-            <AiOutlineLogout /> {/* Use the AiOutlineLogout icon */}
-            <span className="nav_name">SignOut</span>
-          </a>
+          {loginuser ? (
+            <a href="#" className="nav_link" onClick={handleSignOut}>
+              <AiOutlineLogout />
+              <span className="nav_name">SignOut</span>
+            </a>
+          ) : (
+            <Link to={"/sign"} className="nav_link">
+              <AiOutlineUser />
+              <span className="nav_name">SignUp</span>
+            </Link>
+          )}
         </nav>
       </div>
       <div className="calendar-body">
         <Routes>
           <Route exact path="/" element={<CalendarInterface />} />
-          <Route path="/sign" element={<SignUp />} />
+          <Route
+            path="/sign"
+            element={
+              <SignUp
+                authenticated={authenticated}
+                setAuthenticated={setAuthenticated}
+                setLoginUser={setLoginUser}
+              />
+            }
+          />
         </Routes>
       </div>
     </div>

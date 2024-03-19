@@ -38,4 +38,15 @@ export default class slotsDAO {
       return { error: e }
     }
   }
+  static async deleteSlot(id) {
+    try {
+      const deleteResponse = await slots.deleteOne({
+        _id: new ObjectId(id),
+      })
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete slot: ${e}`)
+      return { error: e }
+    }
+  }
 }

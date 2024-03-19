@@ -12,15 +12,6 @@ export default class usersDAO {
       console.error(`Unable to establish a collection handle in slotDAO: ${e}`)
     }
   }
-  static async addUser(email, password) {
-    try {
-      const user = { email: email, password: password }
-      return await users.insertOne(user)
-    } catch (e) {
-      console.error(`Unable to create user: ${e}`)
-      return { error: e }
-    }
-  }
   static async getUsers() {
     try {
       const usersList = await users.find().toArray()
@@ -29,15 +20,6 @@ export default class usersDAO {
     } catch (e) {
       console.error(`Unable to get users: ${e}`)
       return { usersList: [], totalNumUsers: 0 }
-    }
-  }
-  static async checkEmail(email) {
-    try {
-      const user = await users.findOne({ email: email })
-      return user
-    } catch (e) {
-      console.error(`Unable to get user: ${e}`)
-      return null
     }
   }
 }

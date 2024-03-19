@@ -9,5 +9,8 @@ class slotService {
   getAllUsers() {
     return http.get("/users")
   }
+  deleteSlot(id) {
+    return http.delete(`?id=${id}`)
+  }
 }
 export default new slotService()
