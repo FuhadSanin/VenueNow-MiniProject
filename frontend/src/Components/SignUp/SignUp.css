@@ -6,11 +6,11 @@
 }
 
 .signup-container{
+  height: 70vh;
   display: flex;
   justify-content: center;
 }
 .wrapper {
-
   width: 330px;
   height: 400px;
   padding: 2rem 1rem;

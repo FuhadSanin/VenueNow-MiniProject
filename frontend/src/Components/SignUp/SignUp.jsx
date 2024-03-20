@@ -50,25 +50,24 @@ function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
   }
 
   return (
-    <div className="wrapper">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <button type="submit">Sign Up</button>
-      </form>
-      <div className="member">
-        <a href="#">Forget password?</a>
+    <div className="signup-container">
+      <div className="wrapper">
+        <h1>Sign Up</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <button type="submit">Sign In</button>
+        </form>
       </div>
     </div>
   )

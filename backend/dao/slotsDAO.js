@@ -24,13 +24,14 @@ export default class slotsDAO {
     }
   }
 
-  static async createSlot(title, venue, start, end) {
+  static async createSlot(title, venue, start, end, username) {
     try {
       const slot = {
         title: title,
         venue: venue,
         start: start,
         end: end,
+        username: username,
       }
       return await slots.insertOne(slot)
     } catch (e) {

@@ -57,6 +57,8 @@ function About() {
     }
   }, [loginuser])
 
+  console.log(loginuser)
+
   const handleSignOut = () => {
     const shouldSignOut = window.confirm("Are you sure you want to sign out?")
     if (shouldSignOut) {
@@ -76,7 +78,12 @@ function About() {
           <IoReorderThreeOutline />
         </div>
         {loginuser ? (
-          <p onClick={handleSignOut}>Logout, {loginuser}</p>
+          <p onClick={handleSignOut}>
+            Logout,{" "}
+            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+              {loginuser}
+            </span>
+          </p>
         ) : (
           <Link to={"/sign"}>Sign In to book events</Link>
         )}
@@ -114,18 +121,15 @@ function About() {
                     1.The calendar on the sidebar exhibits the events booked for
                     a specific day and time.
                   </span>
-
                   <br />
                   <span>
                     2.Click day button to view events and timings for that day.
                   </span>
-
                   <br />
                   <span>
                     3.Selecting the "Agenda" option provides access to all
                     bookings.
                   </span>
-
                   <br />
                   <span>
                     4.Login is available only for student and staff
@@ -170,7 +174,11 @@ function About() {
       </div>
       <div className="calendar-body">
         <Routes>
-          <Route exact path="/" element={<CalendarInterface />} />
+          <Route
+            exact
+            path="/"
+            element={<CalendarInterface loginuser={loginuser} />}
+          />
           <Route
             path="/sign"
             element={
