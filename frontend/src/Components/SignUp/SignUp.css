@@ -5,10 +5,11 @@
   font-family: "Poppins", sans-serif;
 }
 
-.signup-container{
-  height: 70vh;
+.signup-container {
+  height: 84vh;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .wrapper {
   width: 330px;

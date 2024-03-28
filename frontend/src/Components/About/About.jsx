@@ -11,6 +11,7 @@ import { IoMdAdd } from "react-icons/io"
 import CalendarInterface from "../Calendar/Calendar-Interface"
 import SignUp from "../SignUp/SignUp"
 import { ieee, iedc, nss, arc, logo } from "../../Assets"
+import Ieee from "../IEEE/Ieee"
 
 const LOCAL_STORAGE_KEY = "loginuser"
 
@@ -141,7 +142,7 @@ function About() {
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/ieee"} className="nav_link" onClick={setActiveLink}>
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
               </Link>
@@ -179,6 +180,7 @@ function About() {
             path="/"
             element={<CalendarInterface loginuser={loginuser} />}
           />
+          <Route path="/ieee" element={<Ieee/>}/>
           <Route
             path="/sign"
             element={

@@ -70,6 +70,7 @@ function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
         </form>
       </div>
     </div>
+  
   )
 }
 export default SignUp
