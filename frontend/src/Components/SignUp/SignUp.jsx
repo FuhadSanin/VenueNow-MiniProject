@@ -48,7 +48,8 @@ function SignUp() {
   }
 
   return (
-    <div className="wrapper">
+    <div className="signup-container">
+      <div className="wrapper">
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -69,6 +70,8 @@ function SignUp() {
         <a href="#">Forget password?</a>
       </div>
     </div>
+    </div>
+    
   )
 }
 export default SignUp

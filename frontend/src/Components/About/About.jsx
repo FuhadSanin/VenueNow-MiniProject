@@ -22,6 +22,7 @@ import arc from "../../Assets/arc.png"
 import logo from "../../Assets/logo.png"
 import { PiCalendarCheckFill } from "react-icons/pi"
 import { IoMdAdd } from "react-icons/io"
+import Ieee from "../IEEE/Ieee.jsx"
 
 function About() {
   const [showNav, setShowNav] = useState(false)
@@ -116,7 +117,7 @@ function About() {
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/ieee"} className="nav_link" onClick={setActiveLink}>
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
               </Link>
@@ -144,6 +145,7 @@ function About() {
         <Routes>
           <Route exact path="/" element={<CalendarInterface />} />
           <Route path="/sign" element={<SignUp />} />
+          <Route path="/ieee" element={<Ieee/>}/>
         </Routes>
       </div>
     </div>
