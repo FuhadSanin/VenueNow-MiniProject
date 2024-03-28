@@ -6,7 +6,9 @@ import moment from "moment"
 import "./index.css"
 import { toast } from "react-toastify"
 import "react-big-calendar/lib/css/react-big-calendar.css"
+import debounce from "lodash/debounce"
 import cec from "../../Assets/cec.png"
+import { ieee, iedc, nss, arc } from "../../Assets/index.js"
 
 const localizer = momentLocalizer(moment)
 
@@ -14,7 +16,7 @@ const CalendarInterface = ({ loginuser }) => {
   const navigate = useNavigate()
   const [events, setEvents] = useState([])
   const [showModal, setShowModal] = useState(false)
-  const [selectedDate, setSelectedDate] = useState(null)
+  const [selectedStartDate, setselectedStartDate] = useState(null)
   const [selectEvent, setSelectEvent] = useState(null)
   const [eventInfo, setEventInfo] = useState({
     eventTitle: "",
@@ -37,6 +39,7 @@ const CalendarInterface = ({ loginuser }) => {
           end: moment(slot.end).toDate(),
         }))
         setEvents(modifiedSlots)
+        console.log(modifiedSlots)
       })
       .catch(error => {
         console.log(error)
@@ -49,8 +52,14 @@ const CalendarInterface = ({ loginuser }) => {
       navigate("/sign")
       return
     }
+    const selectedDate = new Date(slotInfo.start)
+    const today = new Date()
+    if (selectedDate <= today) {
+      toast.error("You cannot add events to past dates.")
+      return
+    }
     setShowModal(true)
-    setSelectedDate(slotInfo.start)
+    setselectedStartDate(slotInfo.start)
     setSelectEvent(null)
   }
 
@@ -64,22 +73,22 @@ const CalendarInterface = ({ loginuser }) => {
       endTime: moment(event.end).format("HH:mm"),
     })
   }
-
   const saveEvent = async () => {
     if (
       eventInfo.eventTitle &&
-      selectedDate &&
+      selectedStartDate &&
       eventInfo.venue &&
       eventInfo.startTime &&
       eventInfo.endTime
     ) {
-      const startDateTime = moment(selectedDate)
+      console.log(eventInfo.startTime)
+      const startDateTime = moment(selectedStartDate)
         .set({
           hour: parseInt(eventInfo.startTime.split(":")[0]),
           minute: parseInt(eventInfo.startTime.split(":")[1]),
         })
         .toDate()
-      const endDateTime = moment(selectedDate)
+      const endDateTime = moment(selectedStartDate)
         .set({
           hour: parseInt(eventInfo.endTime.split(":")[0]),
           minute: parseInt(eventInfo.endTime.split(":")[1]),
@@ -176,32 +185,40 @@ const CalendarInterface = ({ loginuser }) => {
       }
     }
   }
-
   const components = {
-    event: props => {
-      return (
-        <div
-          style={{
-            background: "#AAA0D9",
-            color: "black",
-            height: "100%",
-            width: "100%",
-            display: "flex",
-          }}
-        >
-          <img src={cec} alt={props.event.title} width={30} height={30} />
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <p style={{ margin: "0" }}>
-              {moment(props.event.start).format("HH:mm")} -{" "}
-              {moment(props.event.end).format("HH:mm")}
-            </p>
-            <h6 style={{ margin: "0" }}>
-              {props.event.title} - {props.event.username}
-            </h6>
-            <p style={{ margin: "0" }}>{props.event.venue}</p>
+    month: {
+      event: props => {
+        const forum = props?.event?.username
+        let eventIcon
+        switch (forum) {
+          case "ieee":
+            eventIcon = ieee
+            break
+          case "nss":
+            eventIcon = nss
+            break
+          case "iedc":
+            eventIcon = iedc
+            break
+          default:
+            eventIcon = cec
+        }
+        return (
+          <div className="eventContainer">
+            <div className={`eventType1 ${forum}`}></div>
+            <div className={`eventType2 ${forum}`}>
+              <img
+                style={{ marginRight: "5px" }}
+                src={eventIcon}
+                alt=""
+                width={20}
+                height={20}
+              />
+              {props.title}
+            </div>
           </div>
-        </div>
-      )
+        )
+      },
     },
   }
   return (
@@ -318,15 +335,6 @@ const CalendarInterface = ({ loginuser }) => {
                     />
                   </div>
                   <div className="modal-footer">
-                    {/* {selectEvent && (
-                    <button
-                      type="button"
-                      className="btn btn-danger me-2"
-                      onClick={deleteEvent}
-                    >
-                      Delete Event
-                    </button>
-                  )} */}
                     <button
                       type="button"
                       className="btn btn-primary"
