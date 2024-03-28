@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react"
 import "./SignUp.css"
 import slotService from "../../Services/service.js"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
-function SignUp() {
+function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [users, setUsers] = useState([])
-  const [authenticated, setAuthenticated] = useState(false)
 
   const handleEmailChange = e => {
     setEmail(e.target.value)
@@ -39,39 +41,36 @@ function SignUp() {
     )
     if (foundUser) {
       setAuthenticated(true)
-      console.log("Authentication successful")
+      setLoginUser(foundUser.username)
+      toast.success(`Sign Up successful to ${foundUser.username} !`)
+      navigate("/")
     } else {
-      setAuthenticated(false)
-      console.log("Authentication failed")
+      toast.error("Invalid email or password!")
     }
-    console.log(foundUser)
   }
 
   return (
     <div className="signup-container">
       <div className="wrapper">
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <button type="submit">Sign Up</button>
-      </form>
-      <div className="member">
-        <a href="#">Forget password?</a>
+        <h1>Sign Up</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          <button type="submit">Sign In</button>
+        </form>
       </div>
     </div>
-    </div>
-    
+  
   )
 }
 export default SignUp

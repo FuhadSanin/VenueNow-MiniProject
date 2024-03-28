@@ -24,17 +24,29 @@ export default class slotsDAO {
     }
   }
 
-  static async createSlot(title, venue, start, end) {
+  static async createSlot(title, venue, start, end, username) {
     try {
       const slot = {
         title: title,
         venue: venue,
         start: start,
         end: end,
+        username: username,
       }
       return await slots.insertOne(slot)
     } catch (e) {
       console.error(`Unable to create slot: ${e}`)
+      return { error: e }
+    }
+  }
+  static async deleteSlot(id) {
+    try {
+      const deleteResponse = await slots.deleteOne({
+        _id: new ObjectId(id),
+      })
+      return deleteResponse
+    } catch (e) {
+      console.error(`Unable to delete slot: ${e}`)
       return { error: e }
     }
   }

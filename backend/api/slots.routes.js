@@ -6,8 +6,8 @@ const router = Router()
 
 router.route("/").get(slotsController.apiGetSlots)
 router.route("/").post(slotsController.apiCreateSlot)
+router.route("/").delete(slotsController.apiDeleteSlot)
 
 router.route("/users").get(usersController.apiGetUsers)
-router.route("/users").post(usersController.apiCreateUser)
 
 export default router

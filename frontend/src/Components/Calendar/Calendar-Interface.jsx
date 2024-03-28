@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react"
-
 import slotService from "../../Services/service.js"
-
+import { useNavigate } from "react-router-dom"
 import { Calendar, momentLocalizer } from "react-big-calendar"
 import moment from "moment"
 import "./index.css"
+import { toast } from "react-toastify"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import cec from "../../Assets/cec.png"
-import { toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 
 const localizer = momentLocalizer(moment)
 
-const CalendarInterface = () => {
+const CalendarInterface = ({ loginuser }) => {
+  const navigate = useNavigate()
   const [events, setEvents] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [selectedDate, setSelectedDate] = useState(null)
@@ -20,8 +19,8 @@ const CalendarInterface = () => {
   const [eventInfo, setEventInfo] = useState({
     eventTitle: "",
     venue: "",
-    startDate: "",
-    endDate: "",
+    startTime: "",
+    endTime: "",
   })
 
   useEffect(() => {
@@ -38,7 +37,6 @@ const CalendarInterface = () => {
           end: moment(slot.end).toDate(),
         }))
         setEvents(modifiedSlots)
-        console.log(modifiedSlots)
       })
       .catch(error => {
         console.log(error)
@@ -46,6 +44,11 @@ const CalendarInterface = () => {
   }
 
   const handleSelectSlot = slotInfo => {
+    if (!loginuser) {
+      toast.error("Only logged in users can add events.")
+      navigate("/sign")
+      return
+    }
     setShowModal(true)
     setSelectedDate(slotInfo.start)
     setSelectEvent(null)
@@ -119,20 +122,22 @@ const CalendarInterface = () => {
         setEvents(updatedEvents)
       } else {
         const newEvent = {
+          username: loginuser,
           eventTitle: eventInfo.eventTitle,
           startDate: startDateTime,
           endDate: endDateTime,
           venue: eventInfo.venue,
         }
-        console.log(newEvent)
         if (
+          newEvent.username &&
           newEvent.eventTitle &&
           newEvent.startDate &&
           newEvent.endDate &&
           newEvent.venue
         ) {
           const response = await slotService.createSlot(newEvent)
-          console.log(response.data)
+          toast.success("Event has been Added successfully!")
+          retrieveSlots() // Refresh events after adding a new one
         } else {
           console.log("error")
         }
@@ -144,23 +149,34 @@ const CalendarInterface = () => {
         startTime: "",
         endTime: "",
       })
-      console.log(events)
     }
   }
 
-  const deleteEvents = () => {
+  const deleteEvent = async () => {
     if (selectEvent) {
-      const updatedEvents = events.filter(event => event !== selectEvent)
-      setEvents(updatedEvents)
-      setShowModal(false)
-      setEventInfo({
-        eventTitle: "",
-        venue: "",
-        startTime: "",
-        endTime: "",
-      })
+      const confirmation = window.confirm(
+        "Are you sure you want to delete this event?"
+      )
+      if (confirmation) {
+        try {
+          await slotService.deleteSlot(selectEvent._id)
+          setEvents(events.filter(event => event !== selectEvent))
+          toast.success("Event has been deleted successfully!")
+          setShowModal(false)
+          setEventInfo({
+            eventTitle: "",
+            venue: "",
+            startTime: "",
+            endTime: "",
+          })
+        } catch (error) {
+          console.log(error)
+          toast.error("Error occurred while deleting the event.")
+        }
+      }
     }
   }
+
   const components = {
     event: props => {
       return (
@@ -180,7 +196,7 @@ const CalendarInterface = () => {
               {moment(props.event.end).format("HH:mm")}
             </p>
             <h6 style={{ margin: "0" }}>
-              {props.event.title} - {props.event.eventTitle}
+              {props.event.title} - {props.event.username}
             </h6>
             <p style={{ margin: "0" }}>{props.event.venue}</p>
           </div>
@@ -188,7 +204,6 @@ const CalendarInterface = () => {
       )
     },
   }
-
   return (
     <div style={{ height: "700px" }}>
       <Calendar
@@ -205,116 +220,256 @@ const CalendarInterface = () => {
         max={moment("2023-03-18T19:00:00").toDate()}
         min={moment("2023-03-18T09:00:00").toDate()}
       />
-
-      {showModal && (
-        <div
-          className="modal"
-          style={{
-            display: "block",
-            backgroundColor: "rgba(0,0,0,0.5)",
-            position: "fixed",
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {selectEvent ? "Edit Event" : "Add Event"}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => {
-                    setShowModal(false)
-                    setEventInfo({
-                      eventTitle: "",
-                      venue: "",
-                      startTime: "",
-                      endTime: "",
-                    })
-                  }}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <label htmlFor="eventTitle" className="form-label">
-                  Event Title:
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="eventTitle"
-                  value={eventInfo.eventTitle}
-                  onChange={e =>
-                    setEventInfo({ ...eventInfo, eventTitle: e.target.value })
-                  }
-                />
-                <label htmlFor="venue" className="form-label">
-                  Venue:
-                </label>
-                <select
-                  className="form-select"
-                  id="venue"
-                  value={eventInfo.venue}
-                  onChange={e =>
-                    setEventInfo({ ...eventInfo, venue: e.target.value })
-                  }
-                >
-                  <option value="">Select Venue</option>
-                  <option value="open auditorium">Open Auditorium</option>
-                  <option value="ac auditorium">AC Auditorium</option>
-                  <option value="seminar hall">Seminar Hall</option>
-                </select>
-                <label htmlFor="startTime" className="form-label">
-                  Start Time:
-                </label>
-                <input
-                  type="time"
-                  className="form-control"
-                  id="startTime"
-                  value={eventInfo.startTime}
-                  onChange={e =>
-                    setEventInfo({ ...eventInfo, startTime: e.target.value })
-                  }
-                />
-                <label htmlFor="endTime" className="form-label">
-                  End Time:
-                </label>
-                <input
-                  type="time"
-                  className="form-control"
-                  id="endTime"
-                  value={eventInfo.endTime}
-                  onChange={e =>
-                    setEventInfo({ ...eventInfo, endTime: e.target.value })
-                  }
-                />
-              </div>
-              <div className="modal-footer">
-                {selectEvent && (
-                  <button
-                    type="button"
-                    className="btn btn-danger me-2"
-                    onClick={deleteEvents}
-                  >
-                    Delete Events
-                  </button>
-                )}
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={saveEvent}
-                >
-                  Save
-                </button>
+      {showModal &&
+        (loginuser ? (
+          !selectEvent ? (
+            <div
+              className="modal"
+              style={{
+                display: "block",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                position: "fixed",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Add Event</h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => {
+                        setShowModal(false)
+                        setEventInfo({
+                          eventTitle: "",
+                          venue: "",
+                          startTime: "",
+                          endTime: "",
+                        })
+                      }}
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <label htmlFor="eventTitle" className="form-label">
+                      Event Title:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="eventTitle"
+                      value={eventInfo.eventTitle}
+                      required
+                      onChange={e =>
+                        setEventInfo({
+                          ...eventInfo,
+                          eventTitle: e.target.value,
+                        })
+                      }
+                    />
+                    <label htmlFor="venue" className="form-label">
+                      Venue:
+                    </label>
+                    <select
+                      className="form-select"
+                      id="venue"
+                      value={eventInfo.venue}
+                      onChange={e =>
+                        setEventInfo({ ...eventInfo, venue: e.target.value })
+                      }
+                      required
+                    >
+                      <option value="">Select Venue</option>
+                      <option value="open auditorium">Open Auditorium</option>
+                      <option value="ac auditorium">AC Auditorium</option>
+                      <option value="seminar hall">Seminar Hall</option>
+                    </select>
+                    <label htmlFor="startTime" className="form-label">
+                      Start Time:
+                    </label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      id="startTime"
+                      required
+                      value={eventInfo.startTime}
+                      onChange={e =>
+                        setEventInfo({
+                          ...eventInfo,
+                          startTime: e.target.value,
+                        })
+                      }
+                    />
+                    <label htmlFor="endTime" className="form-label">
+                      End Time:
+                    </label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      id="endTime"
+                      required
+                      value={eventInfo.endTime}
+                      onChange={e =>
+                        setEventInfo({ ...eventInfo, endTime: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    {/* {selectEvent && (
+                    <button
+                      type="button"
+                      className="btn btn-danger me-2"
+                      onClick={deleteEvent}
+                    >
+                      Delete Event
+                    </button>
+                  )} */}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={saveEvent}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+          ) : selectEvent && loginuser === selectEvent.username ? (
+            <div
+              className="modal"
+              style={{
+                display: "block",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                position: "fixed",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+              }}
+            >
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Add Event</h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => {
+                        setShowModal(false)
+                        setEventInfo({
+                          eventTitle: "",
+                          venue: "",
+                          startTime: "",
+                          endTime: "",
+                        })
+                      }}
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <label htmlFor="eventTitle" className="form-label">
+                      Event Title:
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="eventTitle"
+                      value={eventInfo.eventTitle}
+                      required
+                      onChange={e =>
+                        setEventInfo({
+                          ...eventInfo,
+                          eventTitle: e.target.value,
+                        })
+                      }
+                    />
+                    <label htmlFor="venue" className="form-label">
+                      Venue:
+                    </label>
+                    <select
+                      className="form-select"
+                      id="venue"
+                      value={eventInfo.venue}
+                      onChange={e =>
+                        setEventInfo({ ...eventInfo, venue: e.target.value })
+                      }
+                      required
+                    >
+                      <option value="">Select Venue</option>
+                      <option value="open auditorium">Open Auditorium</option>
+                      <option value="ac auditorium">AC Auditorium</option>
+                      <option value="seminar hall">Seminar Hall</option>
+                    </select>
+                    <label htmlFor="startTime" className="form-label">
+                      Start Time:
+                    </label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      id="startTime"
+                      required
+                      value={eventInfo.startTime}
+                      onChange={e =>
+                        setEventInfo({
+                          ...eventInfo,
+                          startTime: e.target.value,
+                        })
+                      }
+                    />
+                    <label htmlFor="endTime" className="form-label">
+                      End Time:
+                    </label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      id="endTime"
+                      required
+                      value={eventInfo.endTime}
+                      onChange={e =>
+                        setEventInfo({
+                          ...eventInfo,
+                          endTime: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    {selectEvent && (
+                      <button
+                        type="button"
+                        className="btn btn-danger me-2"
+                        onClick={deleteEvent}
+                      >
+                        Delete Event
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={saveEvent}
+                    >
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {toast.warning("You can't edit this event")}
+              <h1>{selectEvent.eventTitle}</h1>
+              <h1>{selectEvent.username}</h1>
+            </div>
+          )
+        ) : (
+          <div>
+            <h1>{selectEvent.title}</h1>
+            <h1>{selectEvent.username}</h1>
           </div>
-        </div>
-      )}
+        ))}
     </div>
   )
 }
