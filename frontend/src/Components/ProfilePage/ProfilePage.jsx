@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   MDBCol,
   MDBContainer,
@@ -8,21 +8,22 @@ import {
   MDBCardBody,
   MDBCardImage,
   MDBBtn,
-  MDBBreadcrumb,
-  MDBBreadcrumbItem,
   MDBProgress,
   MDBProgressBar,
   MDBIcon,
   MDBListGroup,
   MDBListGroupItem,
-} from "mdb-react-ui-kit";
-import { FaFacebook } from "react-icons/fa6";
-import { RiInstagramFill } from "react-icons/ri";
-import { MdEmail } from "react-icons/md";
-import { FaLinkedin } from "react-icons/fa6";
+  MDBCardTitle,
+} from "mdb-react-ui-kit"
+import "./ProfilePage.css"
+import { FaFacebook } from "react-icons/fa6"
+import { RiInstagramFill } from "react-icons/ri"
+import { MdEmail } from "react-icons/md"
+import { FaLinkedin } from "react-icons/fa6"
+import { IoCalendarClearOutline } from "react-icons/io5"
+import moment from "moment"
 
-import ieee from "../../Assets/ieee.png";
-export default function ProfilePage() {
+export default function ProfilePage({ profile, events }) {
   return (
     <section>
       <MDBContainer className="py-5">
@@ -31,14 +32,14 @@ export default function ProfilePage() {
             <MDBCard className="mb-4">
               <MDBCardBody className="text-center">
                 <MDBCardImage
-                  src={ieee}
+                  src={profile.icons}
                   alt="avatar"
                   className="rounded-circle"
                   style={{ width: "150px" }}
                   fluid
                 />
-                <p className="text-muted mb-1">
-                  IEEE Student Branch of College of Engineering
+                <p className="text-muted mb-1 text-capitalize">
+                  {profile.name} Student Branch of College of Engineering
                 </p>
                 <p className="text-muted mb-4">Chengannur, Alappuzha</p>
                 <div className="d-flex justify-content-center mb-2">
@@ -154,66 +155,41 @@ export default function ProfilePage() {
                 </MDBRow>
               </MDBCardBody>
             </MDBCard>
-
             <MDBRow>
               <MDBCol md="6">
-                <MDBCard className="mb-4 mb-md-0">
+                <MDBCard className="mb-4">
                   <MDBCardBody>
-                    <MDBCardText className="mb-4">
-                      <span className="text-primary font-italic me-1">
-                        assigment
-                      </span>{" "}
-                      Project Status
-                    </MDBCardText>
-                    <MDBCardText
-                      className="mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Web Design
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={80} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Website Markup
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={72} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      One Page
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={89} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Mobile Template
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={55} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Backend API
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={66} valuemin={0} valuemax={100} />
-                    </MDBProgress>
+                    <MDBCardTitle className="mb-4">
+                      Upcoming Events
+                    </MDBCardTitle>
+                    <hr />
+                    {events && events.length > 0 ? (
+                      events.map(event => (
+                        <div id={event._id}>
+                          <MDBRow>
+                            <MDBCol sm="6" className="bold">
+                              <MDBCardText className="text-muted">
+                                <IoCalendarClearOutline
+                                  style={{
+                                    verticalAlign: "middle",
+                                    marginRight: "5px",
+                                  }}
+                                />{" "}
+                                <span style={{ fontWeight: "600" }}>
+                                  {moment(event.start).format("D MMM, ddd")}
+                                </span>
+                              </MDBCardText>
+                            </MDBCol>
+                            <MDBCol sm="6">
+                              <MDBCardText>{event.title}</MDBCardText>
+                            </MDBCol>
+                          </MDBRow>
+                          <hr />
+                        </div>
+                      ))
+                    ) : (
+                      <div>No events</div>
+                    )}
                   </MDBCardBody>
                 </MDBCard>
               </MDBCol>
@@ -284,5 +260,5 @@ export default function ProfilePage() {
         </MDBRow>
       </MDBContainer>
     </section>
-  );
+  )
 }

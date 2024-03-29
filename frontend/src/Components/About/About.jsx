@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import "./About.css"
-import { Link, useNavigate, Routes, Route } from "react-router-dom"
+import { Link, useNavigate, Routes, Route, resolvePath } from "react-router-dom"
 import { toast } from "react-toastify"
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
 import { IoReorderThreeOutline } from "react-icons/io5"
@@ -11,7 +11,16 @@ import { IoMdAdd } from "react-icons/io"
 import CalendarInterface from "../Calendar/Calendar-Interface"
 import SignUp from "../SignUp/SignUp"
 import { ieee, iedc, nss, arc, logo } from "../../Assets"
-import Ieee from "../IEEE/Ieee"
+import ProfilePage from "../ProfilePage/ProfilePage"
+import slotService from "../../Services/service"
+import moment from "moment"
+
+import {
+  arcProfile,
+  ieeeProfile,
+  iedcProfile,
+  nssProfile,
+} from "../../Constants/constants"
 
 const LOCAL_STORAGE_KEY = "loginuser"
 
@@ -26,7 +35,37 @@ function About() {
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed)
   }
+  const [iedcEvents, setIedcEvents] = useState([])
+  const [ieeeEvents, setIeeeEvents] = useState([])
+  const [nssEvents, setnssEvents] = useState([])
+  const [arcEvents, setarcEvents] = useState([])
 
+  useEffect(() => {
+    retrieveSlots()
+  }, [])
+
+  const retrieveSlots = () => {
+    slotService
+      .getAllSlots()
+      .then(response => {
+        const slots = response.data.slots
+        console.log(slots)
+
+        const iedcEventsData = slots.filter(slot => slot.username === "iedc")
+        const ieeeEventsData = slots.filter(slot => slot.username === "ieee")
+        const nssEventsData = slots.filter(slot => slot.username === "nss")
+        const arcEventsData = slots.filter(slot => slot.username === "arc")
+
+        setIedcEvents(iedcEventsData)
+        setIeeeEvents(ieeeEventsData)
+        setnssEvents(nssEventsData)
+        setarcEvents(arcEventsData)
+        console.log(ieeeEventsData)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
   const toggleNavbar = () => {
     setShowNav(!showNav)
     const bodypd = document.getElementById("body-pd")
@@ -146,15 +185,15 @@ function About() {
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
               </Link>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/iedc"} className="nav_link" onClick={setActiveLink}>
                 <img src={iedc} width={30} height={30} />
                 <span className="nav_name">IEDC</span>
               </Link>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/nss"} className="nav_link" onClick={setActiveLink}>
                 <img src={nss} width={30} height={25} />
                 <span className="nav_name">NSS</span>
               </Link>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/arc"} className="nav_link" onClick={setActiveLink}>
                 <img src={arc} width={30} height={30} />
                 <span className="nav_name">ARC</span>
               </Link>
@@ -180,7 +219,22 @@ function About() {
             path="/"
             element={<CalendarInterface loginuser={loginuser} />}
           />
-          <Route path="/ieee" element={<Ieee/>}/>
+          <Route
+            path="/ieee"
+            element={<ProfilePage profile={ieeeProfile} events={ieeeEvents} />}
+          />
+          <Route
+            path="/iedc"
+            element={<ProfilePage profile={iedcProfile} events={iedcEvents} />}
+          />
+          <Route
+            path="/nss"
+            element={<ProfilePage profile={nssProfile} events={nssEvents} />}
+          />
+          <Route
+            path="/arc"
+            element={<ProfilePage profile={arcProfile} events={arcEvents} />}
+          />
           <Route
             path="/sign"
             element={
