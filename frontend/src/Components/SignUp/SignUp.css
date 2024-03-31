@@ -12,8 +12,8 @@
   align-items: center;
 }
 .wrapper {
-  width: 330px;
-  height: 400px;
+  width: 400px;
+  height: fit-content;
   padding: 2rem 1rem;
   margin: 50px auto;
   background-color: #ffff;
@@ -22,9 +22,10 @@
   box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
 .wrapper h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
+  margin-top: -1rem;
   font-weight: 600;
-  color: #07001f;
+  color: var(--first-color);
   margin-bottom: 1.2rem;
 }
 .wrapper form input {
@@ -47,9 +48,10 @@
   color: #fff;
   cursor: pointer;
   background: var(--first-color);
+  transition-duration: 0.3s;
 }
 .wrapper button:hover {
-  background: #879ced;
+  background: #482795;
 }
 .wrapper input:focus {
   border: 1px solid #f6f6f6;

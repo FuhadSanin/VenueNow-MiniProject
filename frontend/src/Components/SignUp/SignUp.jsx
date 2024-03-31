@@ -3,6 +3,7 @@ import "./SignUp.css"
 import slotService from "../../Services/service.js"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import { logo } from "../../Assets/index.js"
 
 function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
   const navigate = useNavigate()
@@ -52,7 +53,8 @@ function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
   return (
     <div className="signup-container">
       <div className="wrapper">
-        <h1>Sign Up</h1>
+        <img src={logo} alt="logo" width={100} height={100} />
+        <h1>VenueNow</h1>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -70,7 +72,6 @@ function SignUp({ authenticated, setAuthenticated, setLoginUser }) {
         </form>
       </div>
     </div>
-  
   )
 }
 export default SignUp

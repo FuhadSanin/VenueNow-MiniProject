@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import "./About.css"
-import { Link, useNavigate, Routes, Route, resolvePath } from "react-router-dom"
+import { Link, useNavigate, Routes, Route } from "react-router-dom"
 import { toast } from "react-toastify"
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
 import { IoReorderThreeOutline } from "react-icons/io5"
@@ -13,8 +13,6 @@ import SignUp from "../SignUp/SignUp"
 import { ieee, iedc, nss, arc, logo } from "../../Assets"
 import ProfilePage from "../ProfilePage/ProfilePage"
 import slotService from "../../Services/service"
-import moment from "moment"
-
 import {
   arcProfile,
   ieeeProfile,
@@ -76,10 +74,15 @@ function About() {
     }
   }
 
-  const setActiveLink = e => {
+  const setActiveLink = index => {
     const links = document.querySelectorAll(".nav_link")
-    links.forEach(link => link.classList.remove("active"))
-    e.target.classList.add("active")
+    links.forEach((link, i) => {
+      if (i === index) {
+        link.classList.add("active")
+      } else {
+        link.classList.remove("active")
+      }
+    })
   }
 
   useEffect(() => {
@@ -139,7 +142,7 @@ function About() {
               <span className="nav_logo-name">Venue Now</span>
             </a>
             <div className="nav_list">
-              <Link to={"/sign"} className="nav_link" onClick={setActiveLink}>
+              <Link to={"/sign"} className="nav_link">
                 <IoMdAdd />
                 <span className="nav_logo-name">Add an Event</span>
               </Link>
@@ -177,23 +180,43 @@ function About() {
                   </span>
                 </div>
               </a>
-              <Link to={"/"} className="nav_link" onClick={setActiveLink}>
+              <Link
+                to={"/"}
+                className="nav_link"
+                onClick={() => setActiveLink(3)} // Pass index or identifier
+              >
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
-              <Link to={"/ieee"} className="nav_link" onClick={setActiveLink}>
+              <Link
+                to={"/ieee"}
+                className="nav_link"
+                onClick={() => setActiveLink(4)} // Pass index or identifier
+              >
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
               </Link>
-              <Link to={"/iedc"} className="nav_link" onClick={setActiveLink}>
+              <Link
+                to={"/iedc"}
+                className="nav_link"
+                onClick={() => setActiveLink(5)} // Pass index or identifier
+              >
                 <img src={iedc} width={30} height={30} />
                 <span className="nav_name">IEDC</span>
               </Link>
-              <Link to={"/nss"} className="nav_link" onClick={setActiveLink}>
+              <Link
+                to={"/nss"}
+                className="nav_link"
+                onClick={() => setActiveLink(6)} // Pass index or identifier
+              >
                 <img src={nss} width={30} height={25} />
                 <span className="nav_name">NSS</span>
               </Link>
-              <Link to={"/arc"} className="nav_link" onClick={setActiveLink}>
+              <Link
+                to={"/arc"}
+                className="nav_link"
+                onClick={() => setActiveLink(7)} // Pass index or identifier
+              >
                 <img src={arc} width={30} height={30} />
                 <span className="nav_name">ARC</span>
               </Link>
