@@ -32,6 +32,7 @@ export default class slotsDAO {
         start: start,
         end: end,
         username: username,
+        status: "pending",
       }
       return await slots.insertOne(slot)
     } catch (e) {
@@ -47,6 +48,18 @@ export default class slotsDAO {
       return deleteResponse
     } catch (e) {
       console.error(`Unable to delete slot: ${e}`)
+      return { error: e }
+    }
+  }
+  static async updateSlotStatus(id, status) {
+    try {
+      const updateResponse = await slots.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { status: status } }
+      )
+      return updateResponse
+    } catch (e) {
+      console.error(`Unable to update slot status: ${e}`)
       return { error: e }
     }
   }

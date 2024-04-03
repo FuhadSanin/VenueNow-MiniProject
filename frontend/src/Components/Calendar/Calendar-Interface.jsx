@@ -6,9 +6,14 @@ import moment from "moment"
 import "./index.css"
 import { toast } from "react-toastify"
 import "react-big-calendar/lib/css/react-big-calendar.css"
-import debounce from "lodash/debounce"
 import cec from "../../Assets/cec.png"
 import { ieee, iedc, nss, arc } from "../../Assets/index.js"
+import {
+  arcProfile,
+  ieeeProfile,
+  iedcProfile,
+  nssProfile,
+} from "../../Constants/constants"
 
 const localizer = momentLocalizer(moment)
 
@@ -16,6 +21,7 @@ const CalendarInterface = ({ loginuser }) => {
   const navigate = useNavigate()
   const [events, setEvents] = useState([])
   const [showModal, setShowModal] = useState(false)
+  const [forumData, setForumData] = useState()
   const [selectedStartDate, setselectedStartDate] = useState(null)
   const [selectEvent, setSelectEvent] = useState(null)
   const [eventInfo, setEventInfo] = useState({
@@ -33,19 +39,17 @@ const CalendarInterface = ({ loginuser }) => {
     slotService
       .getAllSlots()
       .then(response => {
-        const modifiedSlots = response.data.slots.map(slot => ({
-          ...slot,
-          start: moment(slot.start).toDate(),
-          end: moment(slot.end).toDate(),
-        }))
-        setEvents(modifiedSlots)
-        console.log(modifiedSlots)
+        const eventsData = response.data.slots
+          .filter(slot => slot.status === "approved")
+          .map(slot => ({
+            ...slot,
+            start: moment(slot.start).toDate(),
+            end: moment(slot.end).toDate(),
+          }))
+        setEvents(eventsData)
       })
-      .catch(error => {
-        console.log(error)
-      })
+      .catch(console.error)
   }
-
   const handleSelectSlot = slotInfo => {
     if (!loginuser) {
       toast.error("Only logged in users can add events.")
@@ -145,8 +149,10 @@ const CalendarInterface = ({ loginuser }) => {
           newEvent.venue
         ) {
           const response = await slotService.createSlot(newEvent)
-          toast.success("Event has been Added successfully!")
-          retrieveSlots() // Refresh events after adding a new one
+          toast.success(
+            "Event Request have been succesfully send to Principal!"
+          )
+          retrieveSlots()
         } else {
           console.log("error")
         }
@@ -158,6 +164,7 @@ const CalendarInterface = ({ loginuser }) => {
         startTime: "",
         endTime: "",
       })
+      navigate("/forum_admin")
     }
   }
 
@@ -362,7 +369,7 @@ const CalendarInterface = ({ loginuser }) => {
               <div className="modal-dialog">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h5 className="modal-title">Add Event</h5>
+                    <h5 className="modal-title">Edit Event</h5>
                     <button
                       type="button"
                       className="btn-close"
@@ -466,16 +473,187 @@ const CalendarInterface = ({ loginuser }) => {
               </div>
             </div>
           ) : (
-            <div>
-              {toast.warning("You can't edit this event")}
-              <h1>{selectEvent.eventTitle}</h1>
-              <h1>{selectEvent.username}</h1>
+            <div
+              className="modal"
+              style={{
+                display: "block",
+                backgroundColor: "rgba(0,0,0,0.5)",
+                position: "fixed",
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000, // Ensure it appears above other elements
+              }}
+            >
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <img
+                      src={selectEvent.username}
+                      alt="Logo"
+                      style={{
+                        width: "100px",
+                        height: "auto", // Maintain aspect ratio
+                        marginRight: "10px", // Add spacing between logo and heading
+                      }}
+                    />
+                    <h5
+                      className="modal-title"
+                      style={{
+                        margin: 0, // Remove default margin
+                        fontSize: "24px", // Adjust font size as needed
+                        textTransform: "uppercase ",
+                      }}
+                    >
+                      {selectEvent.username}
+                    </h5>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      aria-label="Close"
+                      onClick={() => setShowModal(false)}
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <table className="table">
+                      <tbody>
+                        <tr>
+                          <td className="fw-bold">Event Title:</td>
+                          <td className="fw-bold">{selectEvent.title}</td>
+                        </tr>
+                        <tr>
+                          <td className="fw-bold">Date:</td>
+                          <td className="text-muted">
+                            {moment(selectEvent.start).format("D MMM, ddd")}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="fw-bold capitalise">Venue:</td>
+                          <td className="text-muted">{selectEvent.venue}</td>
+                        </tr>
+                        <tr>
+                          <td className="fw-bold">Start Time:</td>
+                          <td className="text-muted">
+                            {moment(selectEvent.start).format("HH:mm")}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="fw-bold">End Time:</td>
+                          <td className="text-muted">
+                            {moment(selectEvent.end).format("HH:mm")}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setShowModal(false)}
+                    >
+                      Close
+                    </button>
+                    <button type="button" className="btn btn-success">
+                      Register Now
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )
         ) : (
-          <div>
-            <h1>{selectEvent.title}</h1>
-            <h1>{selectEvent.username}</h1>
+          <div
+            className="modal"
+            style={{
+              display: "block",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              position: "fixed",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              zIndex: 1000, // Ensure it appears above other elements
+            }}
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <img
+                    src={arc}
+                    alt="Logo"
+                    style={{
+                      width: "100px", // Adjust the width as needed
+                      height: "auto", // Maintain aspect ratio
+                      marginRight: "10px", // Add spacing between logo and heading
+                    }}
+                  />
+                  <h5
+                    className="modal-title"
+                    style={{
+                      margin: 0, // Remove default margin
+                      fontSize: "24px", // Adjust font size as needed
+                      textTransform: "uppercase ",
+                    }}
+                  >
+                    {selectEvent.username}
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={() => setShowModal(false)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <table className="table">
+                    <tbody>
+                      <tr>
+                        <td className="fw-bold">Event Title:</td>
+                        <td className="fw-bold">{selectEvent.title}</td>
+                      </tr>
+                      <tr>
+                        <td className="fw-bold">Date:</td>
+                        <td className="text-muted">
+                          {moment(selectEvent.start).format("D MMM, ddd")}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="fw-bold capitalise">Venue:</td>
+                        <td className="text-muted">{selectEvent.venue}</td>
+                      </tr>
+                      <tr>
+                        <td className="fw-bold">Start Time:</td>
+                        <td className="text-muted">
+                          {moment(selectEvent.start).format("HH:mm")}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="fw-bold">End Time:</td>
+                        <td className="text-muted">
+                          {moment(selectEvent.end).format("HH:mm")}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-success">
+                    Register Now
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         ))}
     </div>

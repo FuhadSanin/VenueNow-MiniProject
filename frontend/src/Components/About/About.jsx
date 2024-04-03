@@ -13,12 +13,15 @@ import SignUp from "../SignUp/SignUp"
 import { ieee, iedc, nss, arc, logo } from "../../Assets"
 import ProfilePage from "../ProfilePage/ProfilePage"
 import slotService from "../../Services/service"
+import { RiAdminLine } from "react-icons/ri"
 import {
   arcProfile,
   ieeeProfile,
   iedcProfile,
   nssProfile,
 } from "../../Constants/constants"
+import Admin from "../Admin/Admin"
+import ForumAdmin from "../Admin/ForumAdmin"
 
 const LOCAL_STORAGE_KEY = "loginuser"
 
@@ -33,6 +36,11 @@ function About() {
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed)
   }
+  const [slots, setSlots] = useState([])
+  const [pendingSlots, setPendingSlots] = useState([])
+  const [approvedSlots, setApprovedSlots] = useState([])
+  const [rejectedSlots, setRejectedSlots] = useState([])
+
   const [iedcEvents, setIedcEvents] = useState([])
   const [ieeeEvents, setIeeeEvents] = useState([])
   const [nssEvents, setnssEvents] = useState([])
@@ -46,19 +54,37 @@ function About() {
     slotService
       .getAllSlots()
       .then(response => {
-        const slots = response.data.slots
-        console.log(slots)
+        const slotsData = response.data.slots
+        setSlots(slotsData)
 
-        const iedcEventsData = slots.filter(slot => slot.username === "iedc")
-        const ieeeEventsData = slots.filter(slot => slot.username === "ieee")
-        const nssEventsData = slots.filter(slot => slot.username === "nss")
-        const arcEventsData = slots.filter(slot => slot.username === "arc")
+        const pendingSlotsData = response.data.slots.filter(
+          slot => slot.status === "pending"
+        )
+        setPendingSlots(pendingSlotsData)
+        const rejectedSlotsData = response.data.slots.filter(
+          slot => slot.status === "rejected"
+        )
+        setRejectedSlots(rejectedSlotsData)
 
+        const approvedSlots = response.data.slots.filter(
+          slot => slot.status === "approved"
+        )
+        const iedcEventsData = approvedSlots.filter(
+          slot => slot.username === "iedc"
+        )
+        const ieeeEventsData = approvedSlots.filter(
+          slot => slot.username === "ieee"
+        )
+        const nssEventsData = approvedSlots.filter(
+          slot => slot.username === "nss"
+        )
+        const arcEventsData = approvedSlots.filter(
+          slot => slot.username === "arc"
+        )
         setIedcEvents(iedcEventsData)
         setIeeeEvents(ieeeEventsData)
         setnssEvents(nssEventsData)
         setarcEvents(arcEventsData)
-        console.log(ieeeEventsData)
       })
       .catch(error => {
         console.log(error)
@@ -120,18 +146,20 @@ function About() {
         <div className="header_toggle" onClick={toggleNavbar}>
           <IoReorderThreeOutline />
         </div>
-        {loginuser ? (
-          <p onClick={handleSignOut}>
-            Logout,{" "}
-            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
-              {loginuser}
-            </span>
-          </p>
-        ) : (
-          <Link to={"/sign"}>Sign In to book events</Link>
-        )}
         <div className="header_img">
           <img src={logo} alt="" />
+        </div>
+        <div>
+          {loginuser ? (
+            <p onClick={handleSignOut}>
+              Logout,{" "}
+              <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+                {loginuser}
+              </span>
+            </p>
+          ) : (
+            <Link to={"/sign"}>Sign In to book events</Link>
+          )}
         </div>
       </header>
       <div className={`l-navbar ${showNav ? "show" : ""}`} id="nav-bar">
@@ -146,40 +174,6 @@ function About() {
                 <IoMdAdd />
                 <span className="nav_logo-name">Add an Event</span>
               </Link>
-              <a
-                className="nav_link"
-                onClick={toggleCollapse}
-                aria-expanded={!isCollapsed}
-                aria-controls="collapseExample"
-              >
-                <BiNotepad />
-                <span className="nav_name">Instructions</span>
-              </a>
-              <a
-                className={`collapse ${isCollapsed ? "" : "show"}`}
-                id="collapseExample"
-              >
-                <div className="card card-body">
-                  <span>
-                    1.The calendar on the sidebar exhibits the events booked for
-                    a specific day and time.
-                  </span>
-                  <br />
-                  <span>
-                    2.Click day button to view events and timings for that day.
-                  </span>
-                  <br />
-                  <span>
-                    3.Selecting the "Agenda" option provides access to all
-                    bookings.
-                  </span>
-                  <br />
-                  <span>
-                    4.Login is available only for student and staff
-                    coordinators.
-                  </span>
-                </div>
-              </a>
               <Link
                 to={"/"}
                 className="nav_link"
@@ -188,10 +182,31 @@ function About() {
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
+              {loginuser &&
+                (loginuser === "admin" ? (
+                  <Link
+                    to={"/admin"}
+                    className="nav_link"
+                    onClick={() => setActiveLink(4)} // Pass index or identifier
+                  >
+                    <RiAdminLine />
+                    <span className="nav_name">Admin</span>
+                  </Link>
+                ) : (
+                  <Link
+                    to={"/forum_admin"}
+                    className="nav_link"
+                    onClick={() => setActiveLink(4)} // Pass index or identifier
+                  >
+                    <RiAdminLine />
+                    <span className="nav_name">{loginuser} Admin</span>
+                  </Link>
+                ))}
+
               <Link
                 to={"/ieee"}
                 className="nav_link"
-                onClick={() => setActiveLink(4)} // Pass index or identifier
+                onClick={() => setActiveLink(5)} // Pass index or identifier
               >
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
@@ -199,7 +214,7 @@ function About() {
               <Link
                 to={"/iedc"}
                 className="nav_link"
-                onClick={() => setActiveLink(5)} // Pass index or identifier
+                onClick={() => setActiveLink(6)} // Pass index or identifier
               >
                 <img src={iedc} width={30} height={30} />
                 <span className="nav_name">IEDC</span>
@@ -207,7 +222,7 @@ function About() {
               <Link
                 to={"/nss"}
                 className="nav_link"
-                onClick={() => setActiveLink(6)} // Pass index or identifier
+                onClick={() => setActiveLink(7)} // Pass index or identifier
               >
                 <img src={nss} width={30} height={25} />
                 <span className="nav_name">NSS</span>
@@ -215,7 +230,7 @@ function About() {
               <Link
                 to={"/arc"}
                 className="nav_link"
-                onClick={() => setActiveLink(7)} // Pass index or identifier
+                onClick={() => setActiveLink(8)} // Pass index or identifier
               >
                 <img src={arc} width={30} height={30} />
                 <span className="nav_name">ARC</span>
@@ -257,6 +272,25 @@ function About() {
           <Route
             path="/arc"
             element={<ProfilePage profile={arcProfile} events={arcEvents} />}
+          />
+          <Route
+            path="/admin"
+            element={
+              <Admin
+                retrieveSlots={retrieveSlots}
+                pendingSlots={pendingSlots}
+              />
+            }
+          />
+          <Route
+            path="/forum_admin"
+            element={
+              <ForumAdmin
+                retrieveSlots={retrieveSlots}
+                slots={slots}
+                loginuser={loginuser}
+              />
+            }
           />
           <Route
             path="/sign"

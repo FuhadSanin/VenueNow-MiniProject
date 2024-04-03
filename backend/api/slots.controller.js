@@ -33,4 +33,18 @@ export default class slotsController {
       res.status(500).json({ error: e.message })
     }
   }
+  static async apiUpdateSlotStatus(req, res, next) {
+    try {
+      const { id } = req.params
+      const { status } = req.body
+      const updateResponse = await slotsDAO.updateSlotStatus(id, status)
+      if (updateResponse.modifiedCount === 1) {
+        res.json({ status: "success" })
+      } else {
+        throw new Error("Unable to update slot status")
+      }
+    } catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
 }
