@@ -8,6 +8,8 @@ router.route("/").get(slotsController.apiGetSlots)
 router.route("/").post(slotsController.apiCreateSlot)
 router.route("/").delete(slotsController.apiDeleteSlot)
 
+router.route("/:id").put(slotsController.apiUpdateSlotStatus)
+
 router.route("/users").get(usersController.apiGetUsers)
 
 export default router

@@ -1,129 +1,155 @@
-import React, { useState, useEffect } from "react";
-import "./About.css";
-import { Link, useNavigate, Routes, Route } from "react-router-dom";
-import { toast } from "react-toastify";
-import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
-import { IoReorderThreeOutline } from "react-icons/io5";
-import { BiNotepad } from "react-icons/bi";
-import { SlCalender } from "react-icons/sl";
-import { PiCalendarCheckFill } from "react-icons/pi";
-import { IoMdAdd } from "react-icons/io";
-import CalendarInterface from "../Calendar/Calendar-Interface";
-import SignUp from "../SignUp/SignUp";
-import { ieee, iedc, nss, arc, logo } from "../../Assets";
-import ProfilePage from "../ProfilePage/ProfilePage";
-import slotService from "../../Services/service";
+import React, { useState, useEffect } from "react"
+import "./About.css"
+import { Link, useNavigate, Routes, Route } from "react-router-dom"
+import { toast } from "react-toastify"
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
+import { IoReorderThreeOutline } from "react-icons/io5"
+import { BiNotepad } from "react-icons/bi"
+import { SlCalender } from "react-icons/sl"
+import { PiCalendarCheckFill } from "react-icons/pi"
+import { IoMdAdd } from "react-icons/io"
+import CalendarInterface from "../Calendar/Calendar-Interface"
+import SignUp from "../SignUp/SignUp"
+import { ieee, iedc, nss, arc, logo } from "../../Assets"
+import ProfilePage from "../ProfilePage/ProfilePage"
+import slotService from "../../Services/service"
+import { RiAdminLine } from "react-icons/ri"
 import {
   arcProfile,
   ieeeProfile,
   iedcProfile,
   nssProfile,
-} from "../../Constants/constants";
-import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
+} from "../../Constants/constants"
+import Dropdown from "react-bootstrap/Dropdown"
+import Button from "react-bootstrap/Button"
+import ButtonGroup from "react-bootstrap/ButtonGroup"
+import Admin from "../Admin/Admin"
+import ForumAdmin from "../Admin/ForumAdmin"
 
-import DropdownButton from "react-bootstrap/DropdownButton";
+import DropdownButton from "react-bootstrap/DropdownButton"
 
-const LOCAL_STORAGE_KEY = "loginuser";
+const LOCAL_STORAGE_KEY = "loginuser"
 
 function About() {
-  const navigate = useNavigate();
-  const [showNav, setShowNav] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const navigate = useNavigate()
+  const [showNav, setShowNav] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loginuser, setLoginUser] = useState(null);
+  const [authenticated, setAuthenticated] = useState(false)
+  const [loginuser, setLoginUser] = useState(null)
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-  const [iedcEvents, setIedcEvents] = useState([]);
-  const [ieeeEvents, setIeeeEvents] = useState([]);
-  const [nssEvents, setnssEvents] = useState([]);
-  const [arcEvents, setarcEvents] = useState([]);
+    setIsCollapsed(!isCollapsed)
+  }
+  const [slots, setSlots] = useState([])
+  const [pendingSlots, setPendingSlots] = useState([])
+  const [approvedSlots, setApprovedSlots] = useState([])
+  const [rejectedSlots, setRejectedSlots] = useState([])
+
+  const [iedcEvents, setIedcEvents] = useState([])
+  const [ieeeEvents, setIeeeEvents] = useState([])
+  const [nssEvents, setnssEvents] = useState([])
+  const [arcEvents, setarcEvents] = useState([])
 
   useEffect(() => {
-    retrieveSlots();
-  }, []);
+    retrieveSlots()
+  }, [])
 
   const retrieveSlots = () => {
     slotService
       .getAllSlots()
-      .then((response) => {
-        const slots = response.data.slots;
-        console.log(slots);
+      .then(response => {
+        const slotsData = response.data.slots
+        setSlots(slotsData)
 
-        const iedcEventsData = slots.filter((slot) => slot.username === "iedc");
-        const ieeeEventsData = slots.filter((slot) => slot.username === "ieee");
-        const nssEventsData = slots.filter((slot) => slot.username === "nss");
-        const arcEventsData = slots.filter((slot) => slot.username === "arc");
+        const pendingSlotsData = response.data.slots.filter(
+          slot => slot.status === "pending"
+        )
+        setPendingSlots(pendingSlotsData)
+        const rejectedSlotsData = response.data.slots.filter(
+          slot => slot.status === "rejected"
+        )
+        setRejectedSlots(rejectedSlotsData)
 
-        setIedcEvents(iedcEventsData);
-        setIeeeEvents(ieeeEventsData);
-        setnssEvents(nssEventsData);
-        setarcEvents(arcEventsData);
-        console.log(ieeeEventsData);
+        const approvedSlots = response.data.slots.filter(
+          slot => slot.status === "approved"
+        )
+        const iedcEventsData = approvedSlots.filter(
+          slot => slot.username === "iedc"
+        )
+        const ieeeEventsData = approvedSlots.filter(
+          slot => slot.username === "ieee"
+        )
+        const nssEventsData = approvedSlots.filter(
+          slot => slot.username === "nss"
+        )
+        const arcEventsData = approvedSlots.filter(
+          slot => slot.username === "arc"
+        )
+        setIedcEvents(iedcEventsData)
+        setIeeeEvents(ieeeEventsData)
+        setnssEvents(nssEventsData)
+        setarcEvents(arcEventsData)
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+      .catch(error => {
+        console.log(error)
+      })
+  }
   const toggleNavbar = () => {
-    setShowNav(!showNav);
-    const bodypd = document.getElementById("body-pd");
-    const headerpd = document.getElementById("header");
+    setShowNav(!showNav)
+    const bodypd = document.getElementById("body-pd")
+    const headerpd = document.getElementById("header")
     if (bodypd && headerpd) {
-      bodypd.classList.toggle("body-pd");
-      headerpd.classList.toggle("body-pd");
+      bodypd.classList.toggle("body-pd")
+      headerpd.classList.toggle("body-pd")
     }
-  };
+  }
 
-  const setActiveLink = (index) => {
-    const links = document.querySelectorAll(".nav_link");
+  const setActiveLink = index => {
+    const links = document.querySelectorAll(".nav_link")
     links.forEach((link, i) => {
       if (i === index) {
-        link.classList.add("active");
+        link.classList.add("active")
       } else {
-        link.classList.remove("active");
+        link.classList.remove("active")
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY)
     if (storedLoginUser) {
-      setLoginUser(JSON.parse(storedLoginUser));
+      setLoginUser(JSON.parse(storedLoginUser))
     } else {
-      setLoginUser(null);
+      setLoginUser(null)
     }
-  }, [loginuser]);
+  }, [loginuser])
 
   useEffect(() => {
     if (loginuser !== null) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser));
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser))
     }
-  }, [loginuser]);
+  }, [loginuser])
 
-  console.log(loginuser);
+  console.log(loginuser)
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   const toggleDropdown = () => {
-    console.log("success");
-    setIsOpen(!isOpen);
-  };
+    console.log("success")
+    setIsOpen(!isOpen)
+  }
 
   const handleSignOut = () => {
-    const shouldSignOut = window.confirm("Are you sure you want to sign out?");
+    const shouldSignOut = window.confirm("Are you sure you want to sign out?")
     if (shouldSignOut) {
-      toast.success("You have been signed out successfully!");
-      setLoginUser(null);
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      navigate("/sign");
+      toast.success("You have been signed out successfully!")
+      setLoginUser(null)
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+      navigate("/sign")
     } else {
-      toast.info("Sign out canceled.");
+      toast.info("Sign out canceled.")
     }
-  };
+  }
 
   return (
     <div id="body-pd">
@@ -168,7 +194,6 @@ function About() {
                 <IoMdAdd />
                 <span className="nav_logo-name">Add an Event</span>
               </Link>
-
               <Link
                 to={"/"}
                 className="nav_link"
@@ -177,10 +202,31 @@ function About() {
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
+              {loginuser &&
+                (loginuser === "admin" ? (
+                  <Link
+                    to={"/admin"}
+                    className="nav_link"
+                    onClick={() => setActiveLink(4)} // Pass index or identifier
+                  >
+                    <RiAdminLine />
+                    <span className="nav_name">Admin</span>
+                  </Link>
+                ) : (
+                  <Link
+                    to={"/forum_admin"}
+                    className="nav_link"
+                    onClick={() => setActiveLink(4)} // Pass index or identifier
+                  >
+                    <RiAdminLine />
+                    <span className="nav_name">{loginuser} Admin</span>
+                  </Link>
+                ))}
+
               <Link
                 to={"/ieee"}
                 className="nav_link"
-                onClick={() => setActiveLink(4)} // Pass index or identifier
+                onClick={() => setActiveLink(5)} // Pass index or identifier
               >
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
@@ -188,7 +234,7 @@ function About() {
               <Link
                 to={"/iedc"}
                 className="nav_link"
-                onClick={() => setActiveLink(5)} // Pass index or identifier
+                onClick={() => setActiveLink(6)} // Pass index or identifier
               >
                 <img src={iedc} width={30} height={30} />
                 <span className="nav_name">IEDC</span>
@@ -196,7 +242,7 @@ function About() {
               <Link
                 to={"/nss"}
                 className="nav_link"
-                onClick={() => setActiveLink(6)} // Pass index or identifier
+                onClick={() => setActiveLink(7)} // Pass index or identifier
               >
                 <img src={nss} width={30} height={25} />
                 <span className="nav_name">NSS</span>
@@ -204,7 +250,7 @@ function About() {
               <Link
                 to={"/arc"}
                 className="nav_link"
-                onClick={() => setActiveLink(7)} // Pass index or identifier
+                onClick={() => setActiveLink(8)} // Pass index or identifier
               >
                 <img src={arc} width={30} height={30} />
                 <span className="nav_name">ARC</span>
@@ -248,6 +294,25 @@ function About() {
             element={<ProfilePage profile={arcProfile} events={arcEvents} />}
           />
           <Route
+            path="/admin"
+            element={
+              <Admin
+                retrieveSlots={retrieveSlots}
+                pendingSlots={pendingSlots}
+              />
+            }
+          />
+          <Route
+            path="/forum_admin"
+            element={
+              <ForumAdmin
+                retrieveSlots={retrieveSlots}
+                slots={slots}
+                loginuser={loginuser}
+              />
+            }
+          />
+          <Route
             path="/sign"
             element={
               <SignUp
@@ -260,7 +325,7 @@ function About() {
         </Routes>
       </div>
     </div>
-  );
+  )
 }
 
-export default About;
+export default About
