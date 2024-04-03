@@ -1,118 +1,129 @@
-import React, { useState, useEffect } from "react"
-import "./About.css"
-import { Link, useNavigate, Routes, Route } from "react-router-dom"
-import { toast } from "react-toastify"
-import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
-import { IoReorderThreeOutline } from "react-icons/io5"
-import { BiNotepad } from "react-icons/bi"
-import { SlCalender } from "react-icons/sl"
-import { PiCalendarCheckFill } from "react-icons/pi"
-import { IoMdAdd } from "react-icons/io"
-import CalendarInterface from "../Calendar/Calendar-Interface"
-import SignUp from "../SignUp/SignUp"
-import { ieee, iedc, nss, arc, logo } from "../../Assets"
-import ProfilePage from "../ProfilePage/ProfilePage"
-import slotService from "../../Services/service"
+import React, { useState, useEffect } from "react";
+import "./About.css";
+import { Link, useNavigate, Routes, Route } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { IoReorderThreeOutline } from "react-icons/io5";
+import { BiNotepad } from "react-icons/bi";
+import { SlCalender } from "react-icons/sl";
+import { PiCalendarCheckFill } from "react-icons/pi";
+import { IoMdAdd } from "react-icons/io";
+import CalendarInterface from "../Calendar/Calendar-Interface";
+import SignUp from "../SignUp/SignUp";
+import { ieee, iedc, nss, arc, logo } from "../../Assets";
+import ProfilePage from "../ProfilePage/ProfilePage";
+import slotService from "../../Services/service";
 import {
   arcProfile,
   ieeeProfile,
   iedcProfile,
   nssProfile,
-} from "../../Constants/constants"
+} from "../../Constants/constants";
+import Dropdown from "react-bootstrap/Dropdown";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-const LOCAL_STORAGE_KEY = "loginuser"
+import DropdownButton from "react-bootstrap/DropdownButton";
+
+const LOCAL_STORAGE_KEY = "loginuser";
 
 function About() {
-  const navigate = useNavigate()
-  const [showNav, setShowNav] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const navigate = useNavigate();
+  const [showNav, setShowNav] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loginuser, setLoginUser] = useState(null)
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loginuser, setLoginUser] = useState(null);
 
   const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed)
-  }
-  const [iedcEvents, setIedcEvents] = useState([])
-  const [ieeeEvents, setIeeeEvents] = useState([])
-  const [nssEvents, setnssEvents] = useState([])
-  const [arcEvents, setarcEvents] = useState([])
+    setIsCollapsed(!isCollapsed);
+  };
+  const [iedcEvents, setIedcEvents] = useState([]);
+  const [ieeeEvents, setIeeeEvents] = useState([]);
+  const [nssEvents, setnssEvents] = useState([]);
+  const [arcEvents, setarcEvents] = useState([]);
 
   useEffect(() => {
-    retrieveSlots()
-  }, [])
+    retrieveSlots();
+  }, []);
 
   const retrieveSlots = () => {
     slotService
       .getAllSlots()
-      .then(response => {
-        const slots = response.data.slots
-        console.log(slots)
+      .then((response) => {
+        const slots = response.data.slots;
+        console.log(slots);
 
-        const iedcEventsData = slots.filter(slot => slot.username === "iedc")
-        const ieeeEventsData = slots.filter(slot => slot.username === "ieee")
-        const nssEventsData = slots.filter(slot => slot.username === "nss")
-        const arcEventsData = slots.filter(slot => slot.username === "arc")
+        const iedcEventsData = slots.filter((slot) => slot.username === "iedc");
+        const ieeeEventsData = slots.filter((slot) => slot.username === "ieee");
+        const nssEventsData = slots.filter((slot) => slot.username === "nss");
+        const arcEventsData = slots.filter((slot) => slot.username === "arc");
 
-        setIedcEvents(iedcEventsData)
-        setIeeeEvents(ieeeEventsData)
-        setnssEvents(nssEventsData)
-        setarcEvents(arcEventsData)
-        console.log(ieeeEventsData)
+        setIedcEvents(iedcEventsData);
+        setIeeeEvents(ieeeEventsData);
+        setnssEvents(nssEventsData);
+        setarcEvents(arcEventsData);
+        console.log(ieeeEventsData);
       })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const toggleNavbar = () => {
-    setShowNav(!showNav)
-    const bodypd = document.getElementById("body-pd")
-    const headerpd = document.getElementById("header")
+    setShowNav(!showNav);
+    const bodypd = document.getElementById("body-pd");
+    const headerpd = document.getElementById("header");
     if (bodypd && headerpd) {
-      bodypd.classList.toggle("body-pd")
-      headerpd.classList.toggle("body-pd")
+      bodypd.classList.toggle("body-pd");
+      headerpd.classList.toggle("body-pd");
     }
-  }
+  };
 
-  const setActiveLink = index => {
-    const links = document.querySelectorAll(".nav_link")
+  const setActiveLink = (index) => {
+    const links = document.querySelectorAll(".nav_link");
     links.forEach((link, i) => {
       if (i === index) {
-        link.classList.add("active")
+        link.classList.add("active");
       } else {
-        link.classList.remove("active")
+        link.classList.remove("active");
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY)
+    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (storedLoginUser) {
-      setLoginUser(JSON.parse(storedLoginUser))
+      setLoginUser(JSON.parse(storedLoginUser));
     } else {
-      setLoginUser(null)
+      setLoginUser(null);
     }
-  }, [loginuser])
+  }, [loginuser]);
 
   useEffect(() => {
     if (loginuser !== null) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser))
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser));
     }
-  }, [loginuser])
+  }, [loginuser]);
 
-  console.log(loginuser)
+  console.log(loginuser);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => {
+    console.log("success");
+    setIsOpen(!isOpen);
+  };
 
   const handleSignOut = () => {
-    const shouldSignOut = window.confirm("Are you sure you want to sign out?")
+    const shouldSignOut = window.confirm("Are you sure you want to sign out?");
     if (shouldSignOut) {
-      toast.success("You have been signed out successfully!")
-      setLoginUser(null)
-      localStorage.removeItem(LOCAL_STORAGE_KEY)
-      navigate("/sign")
+      toast.success("You have been signed out successfully!");
+      setLoginUser(null);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      navigate("/sign");
     } else {
-      toast.info("Sign out canceled.")
+      toast.info("Sign out canceled.");
     }
-  }
+  };
 
   return (
     <div id="body-pd">
@@ -121,18 +132,29 @@ function About() {
           <IoReorderThreeOutline />
         </div>
         {loginuser ? (
-          <p onClick={handleSignOut}>
-            Logout,{" "}
-            <span style={{ fontWeight: "bold", textTransform: "uppercase" }}>
+          <Dropdown>
+            <Dropdown.Toggle
+              variant="success"
+              id="dropdown-basic"
+              style={{
+                background: "transparent",
+                color: "black",
+                border: "none",
+              }}
+            >
               {loginuser}
-            </span>
-          </p>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">dashboard</Dropdown.Item>
+              <Dropdown.Item href="#/action-2" onClick={handleSignOut}>
+                Logout
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         ) : (
-          <Link to={"/sign"}>Sign In to book events</Link>
+          <div>Sign in</div>
         )}
-        <div className="header_img">
-          <img src={logo} alt="" />
-        </div>
       </header>
       <div className={`l-navbar ${showNav ? "show" : ""}`} id="nav-bar">
         <nav className="nav">
@@ -146,40 +168,7 @@ function About() {
                 <IoMdAdd />
                 <span className="nav_logo-name">Add an Event</span>
               </Link>
-              <a
-                className="nav_link"
-                onClick={toggleCollapse}
-                aria-expanded={!isCollapsed}
-                aria-controls="collapseExample"
-              >
-                <BiNotepad />
-                <span className="nav_name">Instructions</span>
-              </a>
-              <a
-                className={`collapse ${isCollapsed ? "" : "show"}`}
-                id="collapseExample"
-              >
-                <div className="card card-body">
-                  <span>
-                    1.The calendar on the sidebar exhibits the events booked for
-                    a specific day and time.
-                  </span>
-                  <br />
-                  <span>
-                    2.Click day button to view events and timings for that day.
-                  </span>
-                  <br />
-                  <span>
-                    3.Selecting the "Agenda" option provides access to all
-                    bookings.
-                  </span>
-                  <br />
-                  <span>
-                    4.Login is available only for student and staff
-                    coordinators.
-                  </span>
-                </div>
-              </a>
+
               <Link
                 to={"/"}
                 className="nav_link"
@@ -271,7 +260,7 @@ function About() {
         </Routes>
       </div>
     </div>
-  )
+  );
 }
 
-export default About
+export default About;

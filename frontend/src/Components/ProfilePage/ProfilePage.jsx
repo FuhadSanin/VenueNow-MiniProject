@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -14,14 +14,15 @@ import {
   MDBListGroup,
   MDBListGroupItem,
   MDBCardTitle,
-} from "mdb-react-ui-kit"
-import "./ProfilePage.css"
-import { FaFacebook } from "react-icons/fa6"
-import { RiInstagramFill } from "react-icons/ri"
-import { MdEmail } from "react-icons/md"
-import { FaLinkedin } from "react-icons/fa6"
-import { IoCalendarClearOutline } from "react-icons/io5"
-import moment from "moment"
+} from "mdb-react-ui-kit";
+import "./ProfilePage.css";
+import { FaFacebook } from "react-icons/fa6";
+import { RiInstagramFill } from "react-icons/ri";
+import { MdEmail } from "react-icons/md";
+import { FaLinkedin } from "react-icons/fa6";
+import { IoCalendarClearOutline } from "react-icons/io5";
+import moment from "moment";
+import Carousel from "react-bootstrap/Carousel";
 
 export default function ProfilePage({ profile, events }) {
   return (
@@ -164,7 +165,7 @@ export default function ProfilePage({ profile, events }) {
                     </MDBCardTitle>
                     <hr />
                     {events && events.length > 0 ? (
-                      events.map(event => (
+                      events.map((event) => (
                         <div id={event._id}>
                           <MDBRow>
                             <MDBCol sm="6" className="bold">
@@ -197,61 +198,20 @@ export default function ProfilePage({ profile, events }) {
               <MDBCol md="6">
                 <MDBCard className="mb-4 mb-md-0">
                   <MDBCardBody>
-                    <MDBCardText className="mb-4">
-                      <span className="text-primary font-italic me-1">
-                        assigment
-                      </span>{" "}
-                      Project Status
-                    </MDBCardText>
-                    <MDBCardText
-                      className="mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Web Design
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={80} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Website Markup
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={72} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      One Page
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={89} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Mobile Template
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={55} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText
-                      className="mt-4 mb-1"
-                      style={{ fontSize: ".77rem" }}
-                    >
-                      Backend API
-                    </MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={66} valuemin={0} valuemax={100} />
-                    </MDBProgress>
+                    <Carousel>
+                      {profile.carousel.map((carousel, index) => (
+                        <Carousel.Item
+                          key={index}
+                          interval={index === 0 ? 1000 : 500}
+                        >
+                          <img
+                            className="d-block w-100"
+                            src={carousel.img}
+                            alt={`Slide ${index + 1}`}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
                   </MDBCardBody>
                 </MDBCard>
               </MDBCol>
@@ -260,5 +220,5 @@ export default function ProfilePage({ profile, events }) {
         </MDBRow>
       </MDBContainer>
     </section>
-  )
+  );
 }
