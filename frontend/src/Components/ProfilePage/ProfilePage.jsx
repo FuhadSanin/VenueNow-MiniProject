@@ -130,7 +130,7 @@ export default function ProfilePage({ profile, events }) {
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">
-                      Fuhad Sanin
+                      {profile.chair}
                     </MDBCardText>
                   </MDBCol>
                 </MDBRow>
@@ -140,7 +140,7 @@ export default function ProfilePage({ profile, events }) {
                     <MDBCardText>Vice Chair</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">Nikhila C</MDBCardText>
+                    <MDBCardText className="text-muted">{profile.vice_Chair}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
