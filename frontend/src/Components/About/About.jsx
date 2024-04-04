@@ -21,12 +21,11 @@ import {
   nssProfile,
 } from "../../Constants/constants"
 import Dropdown from "react-bootstrap/Dropdown"
-import Button from "react-bootstrap/Button"
-import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Admin from "../Admin/Admin"
 import ForumAdmin from "../Admin/ForumAdmin"
-
-import DropdownButton from "react-bootstrap/DropdownButton"
+import Welcome from "../Welcome/Welcome.jsx"
+import { LuUser } from "react-icons/lu"
+import { RiHome2Line } from "react-icons/ri"
 
 const LOCAL_STORAGE_KEY = "loginuser"
 
@@ -50,6 +49,8 @@ function About() {
   const [ieeeEvents, setIeeeEvents] = useState([])
   const [nssEvents, setnssEvents] = useState([])
   const [arcEvents, setarcEvents] = useState([])
+
+  const notificationCount = 3
 
   useEffect(() => {
     retrieveSlots()
@@ -158,7 +159,12 @@ function About() {
           <IoReorderThreeOutline />
         </div>
         {loginuser ? (
-          <Dropdown>
+          <Dropdown
+            style={{
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+              borderRadius: "8px",
+            }}
+          >
             <Dropdown.Toggle
               variant="success"
               id="dropdown-basic"
@@ -166,20 +172,71 @@ function About() {
                 background: "transparent",
                 color: "black",
                 border: "none",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              {loginuser}
+              {notificationCount > 0 && (
+                <>
+                  <LuUser style={{ marginLeft: "5px" }} />
+                  <div
+                    style={{
+                      marginLeft: "5px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      width: "15px",
+                      height: "15px",
+                      color: "white",
+                      fontSize: "10px",
+                      position: "relative",
+                      top: "-8px",
+                      left: "-12px",
+                    }}
+                  >
+                    {notificationCount}
+                  </div>
+                </>
+              )}
+              <span className="fw-bold" style={{ textTransform: "uppercase" }}>
+                {loginuser}
+              </span>
             </Dropdown.Toggle>
-
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">dashboard</Dropdown.Item>
+              {loginuser &&
+                (loginuser === "admin" ? (
+                  <Link to={"/admin"}>
+                    <Dropdown.Item href="#/action-1">Dashboard</Dropdown.Item>
+                  </Link>
+                ) : (
+                  <Link to={"/forum_admin"}>
+                    <Dropdown.Item href="#/action-1">Dashboard</Dropdown.Item>
+                  </Link>
+                ))}
+
               <Dropdown.Item href="#/action-2" onClick={handleSignOut}>
                 Logout
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         ) : (
-          <div>Sign in</div>
+          <Link
+            to={"/sign"}
+            style={{
+              width: "70px",
+              height: "30px",
+              border: "1px solid gray",
+              borderRadius: "8px",
+              background: "transparent",
+              color: "black",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Sign in
+          </Link>
         )}
       </header>
       <div className={`l-navbar ${showNav ? "show" : ""}`} id="nav-bar">
@@ -190,43 +247,27 @@ function About() {
               <span className="nav_logo-name">Venue Now</span>
             </a>
             <div className="nav_list">
-              <Link to={"/sign"} className="nav_link">
-                <IoMdAdd />
-                <span className="nav_logo-name">Add an Event</span>
-              </Link>
               <Link
                 to={"/"}
                 className="nav_link"
-                onClick={() => setActiveLink(3)} // Pass index or identifier
+                onClick={() => setActiveLink(1)} // Pass index or identifier
+              >
+                <RiHome2Line />
+
+                <span className="nav_name">Home</span>
+              </Link>
+              <Link
+                to={"/calender"}
+                className="nav_link"
+                onClick={() => setActiveLink(2)} // Pass index or identifier
               >
                 <SlCalender />
                 <span className="nav_name">Calendar</span>
               </Link>
-              {loginuser &&
-                (loginuser === "admin" ? (
-                  <Link
-                    to={"/admin"}
-                    className="nav_link"
-                    onClick={() => setActiveLink(4)} // Pass index or identifier
-                  >
-                    <RiAdminLine />
-                    <span className="nav_name">Admin</span>
-                  </Link>
-                ) : (
-                  <Link
-                    to={"/forum_admin"}
-                    className="nav_link"
-                    onClick={() => setActiveLink(4)} // Pass index or identifier
-                  >
-                    <RiAdminLine />
-                    <span className="nav_name">{loginuser} Admin</span>
-                  </Link>
-                ))}
-
               <Link
                 to={"/ieee"}
                 className="nav_link"
-                onClick={() => setActiveLink(5)} // Pass index or identifier
+                onClick={() => setActiveLink(3)} // Pass index or identifier
               >
                 <img src={ieee} width={30} height={30} />
                 <span className="nav_name">IEEE</span>
@@ -234,7 +275,7 @@ function About() {
               <Link
                 to={"/iedc"}
                 className="nav_link"
-                onClick={() => setActiveLink(6)} // Pass index or identifier
+                onClick={() => setActiveLink(4)} // Pass index or identifier
               >
                 <img src={iedc} width={30} height={30} />
                 <span className="nav_name">IEDC</span>
@@ -242,7 +283,7 @@ function About() {
               <Link
                 to={"/nss"}
                 className="nav_link"
-                onClick={() => setActiveLink(7)} // Pass index or identifier
+                onClick={() => setActiveLink(5)} // Pass index or identifier
               >
                 <img src={nss} width={30} height={25} />
                 <span className="nav_name">NSS</span>
@@ -250,7 +291,7 @@ function About() {
               <Link
                 to={"/arc"}
                 className="nav_link"
-                onClick={() => setActiveLink(8)} // Pass index or identifier
+                onClick={() => setActiveLink(6)} // Pass index or identifier
               >
                 <img src={arc} width={30} height={30} />
                 <span className="nav_name">ARC</span>
@@ -270,11 +311,13 @@ function About() {
           )}
         </nav>
       </div>
+
       <div className="calendar-body">
         <Routes>
+          <Route path="/" element={<Welcome />} />
           <Route
             exact
-            path="/"
+            path="/calender"
             element={<CalendarInterface loginuser={loginuser} />}
           />
           <Route
