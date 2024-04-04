@@ -129,9 +129,7 @@ export default function ProfilePage({ profile, events }) {
                     <MDBCardText>Chair</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">
-                      Fuhad Sanin
-                    </MDBCardText>
+                    <MDBCardText className="text-muted">Nived G</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -140,7 +138,7 @@ export default function ProfilePage({ profile, events }) {
                     <MDBCardText>Vice Chair</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">Nikhila C</MDBCardText>
+                    <MDBCardText className="text-muted">Abhishek</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -198,7 +196,7 @@ export default function ProfilePage({ profile, events }) {
               <MDBCol md="6">
                 <MDBCard className="mb-4 mb-md-0">
                   <MDBCardBody>
-                    <Carousel>
+                    <Carousel indicators={false}>
                       {profile.carousel.map((carousel, index) => (
                         <Carousel.Item
                           key={index}
@@ -208,6 +206,7 @@ export default function ProfilePage({ profile, events }) {
                             className="d-block w-100"
                             src={carousel.img}
                             alt={`Slide ${index + 1}`}
+                            style={{ width: "100%", height: "200px" }} // Adjust the height as per your requirement
                           />
                         </Carousel.Item>
                       ))}
