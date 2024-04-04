@@ -1,8 +1,9 @@
-import React from "react"
-import CalendarInterface from "./Components/Calendar/Calendar-Interface.jsx"
-import About from "./Components/About/About.jsx"
-import { Routes, Route } from "react-router-dom"
-import SignUp from "./Components/SignUp/SignUp.jsx"
+import React from "react";
+import CalendarInterface from "./Components/Calendar/Calendar-Interface.jsx";
+import About from "./Components/About/About.jsx";
+import { Routes, Route } from "react-router-dom";
+import SignUp from "./Components/SignUp/SignUp.jsx";
+import Welcome from "./Components/Welcome/Welcome.jsx";
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
     //     </Routes>
     //   </div>
     // </div>
-  )
+  );
 }
 
-export default App
+export default App;
