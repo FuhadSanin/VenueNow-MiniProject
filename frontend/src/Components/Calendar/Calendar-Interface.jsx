@@ -14,7 +14,6 @@ import {
   iedcProfile,
   nssProfile,
 } from "../../Constants/constants"
-
 const localizer = momentLocalizer(moment)
 
 const CalendarInterface = ({ loginuser }) => {
