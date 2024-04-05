@@ -10,7 +10,7 @@ import { PiCalendarCheckFill } from "react-icons/pi"
 import { IoMdAdd } from "react-icons/io"
 import CalendarInterface from "../Calendar/Calendar-Interface"
 import SignUp from "../SignUp/SignUp"
-import { ieee, iedc, nss, arc, logo } from "../../Assets"
+import { ieee, iedc, nss, arc, logo, nav_log } from "../../Assets"
 import ProfilePage from "../ProfilePage/ProfilePage"
 import slotService from "../../Services/service"
 import { RiAdminLine } from "react-icons/ri"
@@ -37,9 +37,6 @@ function About() {
   const [authenticated, setAuthenticated] = useState(false)
   const [loginuser, setLoginUser] = useState(null)
 
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed)
-  }
   const [slots, setSlots] = useState([])
   const [pendingSlots, setPendingSlots] = useState([])
   const [approvedSlots, setApprovedSlots] = useState([])
@@ -98,12 +95,15 @@ function About() {
   }
   const toggleNavbar = () => {
     setShowNav(!showNav)
-    const bodypd = document.getElementById("body-pd")
-    const headerpd = document.getElementById("header")
-    if (bodypd && headerpd) {
-      bodypd.classList.toggle("body-pd")
-      headerpd.classList.toggle("body-pd")
-    }
+    // const bodypd = document.getElementById("body-pd")
+    // const headerpd = document.getElementById("header")
+    // if (bodypd && headerpd) {
+    //   bodypd.classList.toggle("body-pd")
+    //   headerpd.classList.toggle("body-pd")
+    // }
+  }
+  const closeNavbar = () => {
+    setShowNav(false)
   }
 
   const setActiveLink = index => {
@@ -131,14 +131,6 @@ function About() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser))
     }
   }, [loginuser])
-
-  console.log(loginuser)
-
-  const [isOpen, setIsOpen] = useState(false)
-  const toggleDropdown = () => {
-    console.log("success")
-    setIsOpen(!isOpen)
-  }
 
   const handleSignOut = () => {
     const shouldSignOut = window.confirm("Are you sure you want to sign out?")
@@ -239,13 +231,23 @@ function About() {
           </Link>
         )}
       </header>
-      <div className={`l-navbar ${showNav ? "show" : ""}`} id="nav-bar">
+      <div
+        className={`l-navbar ${showNav ? "show" : ""}`}
+        id="nav-bar"
+        onMouseEnter={toggleNavbar}
+        onMouseLeave={closeNavbar} // Call closeNavbar when the mouse leaves
+      >
         <nav className="nav">
           <div>
-            <a href="#" className="nav_link">
-              <PiCalendarCheckFill />
+            <Link to={"/"} className="nav_link">
+              <img
+                src={nav_log}
+                width={30}
+                height={30}
+                style={{ marginLeft: "-7px" }}
+              />
               <span className="nav_logo-name">Venue Now</span>
-            </a>
+            </Link>
             <div className="nav_list">
               <Link
                 to={"/"}
@@ -269,7 +271,12 @@ function About() {
                 className="nav_link"
                 onClick={() => setActiveLink(3)} // Pass index or identifier
               >
-                <img src={ieee} width={30} height={30} />
+                <img
+                  src={ieee}
+                  width={30}
+                  height={30}
+                  style={{ marginLeft: "-7px" }}
+                />
                 <span className="nav_name">IEEE</span>
               </Link>
               <Link
@@ -277,7 +284,12 @@ function About() {
                 className="nav_link"
                 onClick={() => setActiveLink(4)} // Pass index or identifier
               >
-                <img src={iedc} width={30} height={30} />
+                <img
+                  src={iedc}
+                  width={30}
+                  height={30}
+                  style={{ marginLeft: "-7px" }}
+                />
                 <span className="nav_name">IEDC</span>
               </Link>
               <Link
@@ -285,7 +297,12 @@ function About() {
                 className="nav_link"
                 onClick={() => setActiveLink(5)} // Pass index or identifier
               >
-                <img src={nss} width={30} height={25} />
+                <img
+                  src={nss}
+                  width={30}
+                  height={25}
+                  style={{ marginLeft: "-7px" }}
+                />
                 <span className="nav_name">NSS</span>
               </Link>
               <Link
@@ -293,7 +310,12 @@ function About() {
                 className="nav_link"
                 onClick={() => setActiveLink(6)} // Pass index or identifier
               >
-                <img src={arc} width={30} height={30} />
+                <img
+                  src={arc}
+                  width={30}
+                  height={30}
+                  style={{ marginLeft: "-7px" }}
+                />
                 <span className="nav_name">ARC</span>
               </Link>
             </div>
