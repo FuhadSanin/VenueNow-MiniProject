@@ -7,13 +7,7 @@ import "./index.css"
 import { toast } from "react-toastify"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import cec from "../../Assets/cec.png"
-import { ieee, iedc, nss, arc } from "../../Assets/index.js"
-import {
-  arcProfile,
-  ieeeProfile,
-  iedcProfile,
-  nssProfile,
-} from "../../Constants/constants"
+import { ieee, iedc, nss, arc } from "../../Assets"
 const localizer = momentLocalizer(moment)
 
 const CalendarInterface = ({ loginuser }) => {

@@ -129,7 +129,9 @@ export default function ProfilePage({ profile, events }) {
                     <MDBCardText>Chair</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">Nived G</MDBCardText>
+                    <MDBCardText className="text-muted">
+                      {profile.chair}
+                    </MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -138,7 +140,7 @@ export default function ProfilePage({ profile, events }) {
                     <MDBCardText>Vice Chair</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">Abhishek</MDBCardText>
+                    <MDBCardText className="text-muted">{profile.vice_Chair}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
@@ -203,7 +205,7 @@ export default function ProfilePage({ profile, events }) {
                           interval={index === 0 ? 1000 : 500}
                         >
                           <img
-                            className="d-block w-100"
+                            className="d-block w-100 object-fit-scale"
                             src={carousel.img}
                             alt={`Slide ${index + 1}`}
                             style={{ width: "100%", height: "200px" }} // Adjust the height as per your requirement
