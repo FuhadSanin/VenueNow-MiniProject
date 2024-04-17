@@ -1,286 +1,165 @@
 import React from "react";
+import "./Welcome.css";
+import {
+  MDBCol,
+  MDBContainer,
+  MDBRow,
+  MDBCard,
+  MDBCardText,
+  MDBCardBody,
+  MDBCardImage,
+  MDBListGroup,
+  MDBListGroupItem,
+  MDBCardTitle,
+} from "mdb-react-ui-kit";
+import { IoCalendarClearOutline } from "react-icons/io5";
+import moment from "moment";
+import Carousel from "react-bootstrap/Carousel";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { light } from "@mui/material/styles/createPalette";
 
-function ProfileSection() {
+
+const data = [
+  { id: 0, value: 10, label: "IEEE" },
+  { id: 1, value: 15, label: "IEDC" },
+  { id: 2, value: 20, label: "NSS" },
+  { id: 3, value: 18, label: "ARC" },
+];
+
+// const colors = ["#6978ca", "#111539", "#97a1d9","#4a5596"]; //same color for the pie chart
+const colors = ["#e95b54", "#fbce4a", "#3caf85","#309fdb"]; //different colors for the pie chart
+
+export default function Welcome({ profile, events }) {
   return (
-    <section style={{ backgroundColor: "#eee" }}>
-      <div className="container py-5">
-        <div className="row">
-          <div className="col-lg-4">
-            <div className="card mb-4">
-              <div className="card-body text-center">
-                <h5 className="my-3">Welcome!</h5>
-                <p className="text-muted mb-1">Full Stack Developer</p>
-                <p className="text-muted mb-4">Bay Area, San Francisco, CA</p>
-                <div className="d-flex justify-content-center mb-2">
-                  <button type="button" className="btn btn-primary">
-                    Follow
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary ms-1"
-                  >
-                    Message
-                  </button>
-                </div>
-              </div>
+    <section>
+      <MDBContainer className="py-5">
+        <MDBRow>
+          <MDBCol lg="4">
+            <div className="text-center">
+              <h1
+                className="mb-1 text-capitalize"
+                style={{ fontSize: "70px", fontWeight: 150 }}
+              >
+                Welcome <br />{" "}
+                <span style={{ color: "#5d4f92", fontWeight: 500 }}>
+                  Students
+                </span>
+              </h1>
             </div>
-            <div className="card mb-4 mb-lg-0">
-              <div className="card-body p-0">
-                <ul className="list-group list-group-flush rounded-3">
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i className="fas fa-globe fa-lg text-warning"></i>
-                    <p className="mb-0">https://mdbootstrap.com</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-github fa-lg"
-                      style={{ color: "#333333" }}
-                    ></i>
-                    <p className="mb-0">mdbootstrap</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-twitter fa-lg"
-                      style={{ color: "#55acee" }}
-                    ></i>
-                    <p className="mb-0">@mdbootstrap</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-instagram fa-lg"
-                      style={{ color: "#ac2bac" }}
-                    ></i>
-                    <p className="mb-0">mdbootstrap</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-facebook-f fa-lg"
-                      style={{ color: "#3b5998" }}
-                    ></i>
-                    <p className="mb-0">mdbootstrap</p>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-8">
-            <div className="card mb-4">
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Full Name</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className="text-muted mb-0">Johnatan Smith</p>
-                  </div>
-                </div>
+            <MDBCard className="mb-4 mt-5">
+              <MDBCardBody>
+                <MDBCardTitle className="mb-4">Upcoming Events</MDBCardTitle>
                 <hr />
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Email</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className="text-muted mb-0">example@example.com</p>
-                  </div>
+                {events && events.length > 0 ? (
+                  events.map((event) => (
+                    <div id={event._id}>
+                      <MDBRow>
+                        <MDBCol sm="6" className="bold">
+                          <MDBCardText className="text-muted">
+                            <IoCalendarClearOutline
+                              style={{
+                                verticalAlign: "middle",
+                                marginRight: "5px",
+                              }}
+                            />
+                            <span style={{ fontWeight: "600" }}>
+                              {moment(event.start).format("D MMM, ddd")}
+                            </span>
+                          </MDBCardText>
+                        </MDBCol>
+                        <MDBCol sm="6">
+                          <MDBCardText>{event.title}</MDBCardText>
+                        </MDBCol>
+                      </MDBRow>
+                      <hr />
+                    </div>
+                  ))
+                ) : (
+                  <div>No events</div>
+                )}
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+          <MDBCol lg="8">
+            <MDBRow className="mb-4">
+              <MDBCol md="6">
+                <MDBCard className="mb-4 mb-lg-0">
+                  <MDBCardBody className="p-3">
+                    <PieChart
+                      series={[{ data }]}
+                      colors={colors} // Pass the colors array to the colors property
+                      width={400}
+                      height={200}
+                    />
+                  </MDBCardBody>
+                </MDBCard>
+              </MDBCol>
+
+              <MDBCol md="6">
+                <MDBCard className="mb-4 mb-md-0">
+                  <MDBCardBody>
+                    <Carousel indicators={false}>
+                      {profile.carousel.map((carousel, index) => (
+                        <Carousel.Item
+                          key={index}
+                          interval={index === 0 ? 1000 : 500}
+                        >
+                          <img
+                            className="d-block w-300 object-fit-scale"
+                            src={carousel.img}
+                            alt={`Slide ${index + 1}`}
+                            style={{ width: "100%", height: "200px" }} // Adjust the height as per your requirement
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  </MDBCardBody>
+                </MDBCard>
+              </MDBCol>
+            </MDBRow>
+            <MDBCard>
+              <MDBCardBody>
+                <div
+                  className="card instruction p-2 pt-0 "
+                  style={{ width: "730px", height: "300px", color: "#747779" }}
+                >
+                  {
+                    <>
+                      <h1 className="fs-4 text-black"> Instructions</h1>
+                      <p>
+                        {" "}
+                        1. This website provides information on events that have
+                        already been scheduled, including their dates and time.{" "}
+                      </p>
+                      <p>
+                        {" "}
+                        2. Users are limited to viewing the scheduled events and
+                        are unable to make bookings.
+                      </p>
+                      <p>
+                        {" "}
+                        3. Only student coordinators and staff members are
+                        authorized to make bookings.
+                      </p>
+                      <p>
+                        {" "}
+                        4. Bookings are directed to the admin page for approval
+                        or rejection.
+                      </p>
+                      <p>
+                        {" "}
+                        5. Events that are approved are exclusively showcased on
+                        the calender interfacecd , while those that are rejected
+                        are indicated as such on the forums page.
+                      </p>
+                    </>
+                  }
                 </div>
-                <hr />
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Phone</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className="text-muted mb-0">(097) 234-5678</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Mobile</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className="text-muted mb-0">(098) 765-4321</p>
-                  </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col-sm-3">
-                    <p className="mb-0">Address</p>
-                  </div>
-                  <div className="col-sm-9">
-                    <p className="text-muted mb-0">
-                      Bay Area, San Francisco, CA
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <div className="card mb-4 mb-md-0">
-                  <div className="card-body">
-                    <p className="mb-4">
-                      <span className="text-primary font-italic me-1">
-                        assigment
-                      </span>{" "}
-                      Project Status
-                    </p>
-                    <p className="mb-1" style={{ fontSize: ".77rem" }}>
-                      Web Design
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "80%" }}
-                        aria-valuenow="80"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Website Markup
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "72%" }}
-                        aria-valuenow="72"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      One Page
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "89%" }}
-                        aria-valuenow="89"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Mobile Template
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "55%" }}
-                        aria-valuenow="55"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Backend API
-                    </p>
-                    <div
-                      className="progress rounded mb-2"
-                      style={{ height: "5px" }}
-                    >
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "66%" }}
-                        aria-valuenow="66"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <div className="card mb-4 mb-md-0">
-                  <div className="card-body">
-                    <p className="mb-4">
-                      <span className="text-primary font-italic me-1">
-                        assigment
-                      </span>{" "}
-                      Project Status
-                    </p>
-                    <p className="mb-1" style={{ fontSize: ".77rem" }}>
-                      Web Design
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "80%" }}
-                        aria-valuenow="80"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Website Markup
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "72%" }}
-                        aria-valuenow="72"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      One Page
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "89%" }}
-                        aria-valuenow="89"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Mobile Template
-                    </p>
-                    <div className="progress rounded" style={{ height: "5px" }}>
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "55%" }}
-                        aria-valuenow="55"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                    <p className="mt-4 mb-1" style={{ fontSize: ".77rem" }}>
-                      Backend API
-                    </p>
-                    <div
-                      className="progress rounded mb-2"
-                      style={{ height: "5px" }}
-                    >
-                      <div
-                        className="progress-bar"
-                        role="progressbar"
-                        style={{ width: "66%" }}
-                        aria-valuenow="66"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
     </section>
   );
 }
-
-export default ProfileSection;

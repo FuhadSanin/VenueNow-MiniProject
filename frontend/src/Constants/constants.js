@@ -85,4 +85,5 @@ const arcProfile = {
   chair: "Ananthu M",
   vice_Chair: "Aparna S",
 }
+
 export { arcProfile, ieeeProfile, iedcProfile, nssProfile }

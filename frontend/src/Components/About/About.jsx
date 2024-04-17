@@ -1,148 +1,148 @@
-import React, { useState, useEffect } from "react"
-import "./About.css"
-import { Link, useNavigate, Routes, Route } from "react-router-dom"
-import { toast } from "react-toastify"
-import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai"
-import { IoReorderThreeOutline } from "react-icons/io5"
-import { BiNotepad } from "react-icons/bi"
-import { SlCalender } from "react-icons/sl"
-import { PiCalendarCheckFill } from "react-icons/pi"
-import { IoMdAdd } from "react-icons/io"
-import CalendarInterface from "../Calendar/Calendar-Interface"
-import SignUp from "../SignUp/SignUp"
-import { ieee, iedc, nss, arc, logo, nav_log } from "../../Assets"
-import ProfilePage from "../ProfilePage/ProfilePage"
-import slotService from "../../Services/service"
-import { RiAdminLine } from "react-icons/ri"
+import React, { useState, useEffect } from "react";
+import "./About.css";
+import { Link, useNavigate, Routes, Route } from "react-router-dom";
+import { toast } from "react-toastify";
+import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
+import { IoReorderThreeOutline } from "react-icons/io5";
+import { BiNotepad } from "react-icons/bi";
+import { SlCalender } from "react-icons/sl";
+import { PiCalendarCheckFill } from "react-icons/pi";
+import { IoMdAdd } from "react-icons/io";
+import CalendarInterface from "../Calendar/Calendar-Interface";
+import SignUp from "../SignUp/SignUp";
+import { ieee, iedc, nss, arc, logo, nav_log } from "../../Assets";
+import ProfilePage from "../ProfilePage/ProfilePage";
+import slotService from "../../Services/service";
+import { RiAdminLine } from "react-icons/ri";
 import {
   arcProfile,
   ieeeProfile,
   iedcProfile,
   nssProfile,
-} from "../../Constants/constants"
-import Dropdown from "react-bootstrap/Dropdown"
-import Admin from "../Admin/Admin"
-import ForumAdmin from "../Admin/ForumAdmin"
-import Welcome from "../Welcome/Welcome.jsx"
-import { LuUser } from "react-icons/lu"
-import { RiHome2Line } from "react-icons/ri"
+} from "../../Constants/constants";
+import Dropdown from "react-bootstrap/Dropdown";
+import Admin from "../Admin/Admin";
+import ForumAdmin from "../Admin/ForumAdmin";
+import Welcome from "../Welcome/Welcome.jsx";
+import { LuUser } from "react-icons/lu";
+import { RiHome2Line } from "react-icons/ri";
 
-const LOCAL_STORAGE_KEY = "loginuser"
+const LOCAL_STORAGE_KEY = "loginuser";
 
 function About() {
-  const navigate = useNavigate()
-  const [showNav, setShowNav] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const navigate = useNavigate();
+  const [showNav, setShowNav] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const [authenticated, setAuthenticated] = useState(false)
-  const [loginuser, setLoginUser] = useState(null)
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loginuser, setLoginUser] = useState(null);
 
-  const [slots, setSlots] = useState([])
-  const [pendingSlots, setPendingSlots] = useState([])
-  const [approvedSlots, setApprovedSlots] = useState([])
-  const [rejectedSlots, setRejectedSlots] = useState([])
+  const [slots, setSlots] = useState([]);
+  const [pendingSlots, setPendingSlots] = useState([]);
+  const [approvedSlots, setApprovedSlots] = useState([]);
+  const [rejectedSlots, setRejectedSlots] = useState([]);
 
-  const [iedcEvents, setIedcEvents] = useState([])
-  const [ieeeEvents, setIeeeEvents] = useState([])
-  const [nssEvents, setnssEvents] = useState([])
-  const [arcEvents, setarcEvents] = useState([])
+  const [iedcEvents, setIedcEvents] = useState([]);
+  const [ieeeEvents, setIeeeEvents] = useState([]);
+  const [nssEvents, setnssEvents] = useState([]);
+  const [arcEvents, setarcEvents] = useState([]);
 
-  const notificationCount = 3
+  const notificationCount = 3;
 
   useEffect(() => {
-    retrieveSlots()
-  }, [])
+    retrieveSlots();
+  }, []);
 
   const retrieveSlots = () => {
     slotService
       .getAllSlots()
-      .then(response => {
-        const slotsData = response.data.slots
-        setSlots(slotsData)
+      .then((response) => {
+        const slotsData = response.data.slots;
+        setSlots(slotsData);
 
         const pendingSlotsData = response.data.slots.filter(
-          slot => slot.status === "pending"
-        )
-        setPendingSlots(pendingSlotsData)
+          (slot) => slot.status === "pending"
+        );
+        setPendingSlots(pendingSlotsData);
         const rejectedSlotsData = response.data.slots.filter(
-          slot => slot.status === "rejected"
-        )
-        setRejectedSlots(rejectedSlotsData)
+          (slot) => slot.status === "rejected"
+        );
+        setRejectedSlots(rejectedSlotsData);
 
         const approvedSlots = response.data.slots.filter(
-          slot => slot.status === "approved"
-        )
+          (slot) => slot.status === "approved"
+        );
         const iedcEventsData = approvedSlots.filter(
-          slot => slot.username === "iedc"
-        )
+          (slot) => slot.username === "iedc"
+        );
         const ieeeEventsData = approvedSlots.filter(
-          slot => slot.username === "ieee"
-        )
+          (slot) => slot.username === "ieee"
+        );
         const nssEventsData = approvedSlots.filter(
-          slot => slot.username === "nss"
-        )
+          (slot) => slot.username === "nss"
+        );
         const arcEventsData = approvedSlots.filter(
-          slot => slot.username === "arc"
-        )
-        setIedcEvents(iedcEventsData)
-        setIeeeEvents(ieeeEventsData)
-        setnssEvents(nssEventsData)
-        setarcEvents(arcEventsData)
+          (slot) => slot.username === "arc"
+        );
+        setIedcEvents(iedcEventsData);
+        setIeeeEvents(ieeeEventsData);
+        setnssEvents(nssEventsData);
+        setarcEvents(arcEventsData);
       })
-      .catch(error => {
-        console.log(error)
-      })
-  }
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const toggleNavbar = () => {
-    setShowNav(!showNav)
+    setShowNav(!showNav);
     // const bodypd = document.getElementById("body-pd")
     // const headerpd = document.getElementById("header")
     // if (bodypd && headerpd) {
     //   bodypd.classList.toggle("body-pd")
     //   headerpd.classList.toggle("body-pd")
     // }
-  }
+  };
   const closeNavbar = () => {
-    setShowNav(false)
-  }
+    setShowNav(false);
+  };
 
-  const setActiveLink = index => {
-    const links = document.querySelectorAll(".nav_link")
+  const setActiveLink = (index) => {
+    const links = document.querySelectorAll(".nav_link");
     links.forEach((link, i) => {
       if (i === index) {
-        link.classList.add("active")
+        link.classList.add("active");
       } else {
-        link.classList.remove("active")
+        link.classList.remove("active");
       }
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY)
+    const storedLoginUser = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (storedLoginUser) {
-      setLoginUser(JSON.parse(storedLoginUser))
+      setLoginUser(JSON.parse(storedLoginUser));
     } else {
-      setLoginUser(null)
+      setLoginUser(null);
     }
-  }, [loginuser])
+  }, [loginuser]);
 
   useEffect(() => {
     if (loginuser !== null) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser))
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loginuser));
     }
-  }, [loginuser])
+  }, [loginuser]);
 
   const handleSignOut = () => {
-    const shouldSignOut = window.confirm("Are you sure you want to sign out?")
+    const shouldSignOut = window.confirm("Are you sure you want to sign out?");
     if (shouldSignOut) {
-      toast.success("You have been signed out successfully!")
-      setLoginUser(null)
-      localStorage.removeItem(LOCAL_STORAGE_KEY)
-      navigate("/sign")
+      toast.success("You have been signed out successfully!");
+      setLoginUser(null);
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+      navigate("/sign");
     } else {
-      toast.info("Sign out canceled.")
+      toast.info("Sign out canceled.");
     }
-  }
+  };
 
   return (
     <div id="body-pd">
@@ -215,8 +215,8 @@ function About() {
           <Link
             to={"/sign"}
             style={{
-              width: "70px",
-              height: "30px",
+              width: "75px",
+              height: "40px",
               border: "1px solid gray",
               borderRadius: "8px",
               background: "transparent",
@@ -336,7 +336,10 @@ function About() {
 
       <div className="calendar-body">
         <Routes>
-          <Route path="/" element={<Welcome />} />
+          <Route
+            path="/"
+            element={<Welcome profile={arcProfile} events={ieeeEvents} />}
+          />
           <Route
             exact
             path="/calender"
@@ -390,7 +393,7 @@ function About() {
         </Routes>
       </div>
     </div>
-  )
+  );
 }
 
-export default About
+export default About;

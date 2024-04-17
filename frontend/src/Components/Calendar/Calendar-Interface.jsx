@@ -220,6 +220,44 @@ const CalendarInterface = ({ loginuser }) => {
         )
       },
     },
+
+    day: {
+      event: props => {
+        const forum = props?.event?.username
+        let eventIcon
+        switch (forum) {
+          case "ieee":
+            eventIcon = ieee
+            break
+          case "nss":
+            eventIcon = nss
+            break
+          case "iedc":
+            eventIcon = iedc
+            break
+          default:
+            eventIcon = cec
+        }
+        return (
+          <div className="eventContainer">
+            <div className={`eventType1 ${forum}`} style={{width:'1%'}}></div>
+            <div className={`eventType2 ${forum}`} style={{width:'99%'}}>
+              <img
+                style={{ marginRight: "5px" }}
+                src={eventIcon}
+                alt=""
+                width={20}
+                height={20}
+              />
+               {props.title} 
+               - {forum}
+              - {props.event.venue}
+              
+            </div>
+          </div>
+        )
+      },
+    },
   }
   return (
     <div style={{ height: "700px" }}>

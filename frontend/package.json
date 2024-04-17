@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mui/material": "^5.15.12",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.15",
+    "@mui/styled-engine-sc": "^6.0.0-alpha.18",
+    "@mui/x-charts": "^7.2.0",
     "@types/react-big-calendar": "^1.6.1",
     "antd": "^5.15.1",
     "axios": "^1.6.7",
@@ -25,6 +29,7 @@
     "react-router-dom": "^6.22.3",
     "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.12.4",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
