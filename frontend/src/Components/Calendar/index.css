@@ -118,6 +118,11 @@ body {
   color: #5a61b9;
 }
 
+/*------------------------------ event-slot-styling-day---------------------------- */
+
+.eventType1 .day{
+  width: 10%;
+}
 /* .ieee {
   width: 97%;
   background: #5f4f9a;

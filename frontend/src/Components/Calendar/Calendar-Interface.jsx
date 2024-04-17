@@ -7,13 +7,7 @@ import "./index.css"
 import { toast } from "react-toastify"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import cec from "../../Assets/cec.png"
-import { ieee, iedc, nss, arc } from "../../Assets/index.js"
-import {
-  arcProfile,
-  ieeeProfile,
-  iedcProfile,
-  nssProfile,
-} from "../../Constants/constants"
+import { ieee, iedc, nss, arc } from "../../Assets"
 const localizer = momentLocalizer(moment)
 
 const CalendarInterface = ({ loginuser }) => {
@@ -221,6 +215,44 @@ const CalendarInterface = ({ loginuser }) => {
                 height={20}
               />
               {props.title}
+            </div>
+          </div>
+        )
+      },
+    },
+
+    day: {
+      event: props => {
+        const forum = props?.event?.username
+        let eventIcon
+        switch (forum) {
+          case "ieee":
+            eventIcon = ieee
+            break
+          case "nss":
+            eventIcon = nss
+            break
+          case "iedc":
+            eventIcon = iedc
+            break
+          default:
+            eventIcon = cec
+        }
+        return (
+          <div className="eventContainer">
+            <div className={`eventType1 ${forum}`} style={{width:'1%'}}></div>
+            <div className={`eventType2 ${forum}`} style={{width:'99%'}}>
+              <img
+                style={{ marginRight: "5px" }}
+                src={eventIcon}
+                alt=""
+                width={20}
+                height={20}
+              />
+               {props.title} 
+               - {forum}
+              - {props.event.venue}
+              
             </div>
           </div>
         )
