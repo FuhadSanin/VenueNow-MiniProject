@@ -4,16 +4,12 @@ import { Link, useNavigate, Routes, Route } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AiOutlineUser, AiOutlineLogout } from "react-icons/ai";
 import { IoReorderThreeOutline } from "react-icons/io5";
-import { BiNotepad } from "react-icons/bi";
 import { SlCalender } from "react-icons/sl";
-import { PiCalendarCheckFill } from "react-icons/pi";
-import { IoMdAdd } from "react-icons/io";
 import CalendarInterface from "../Calendar/Calendar-Interface";
 import SignUp from "../SignUp/SignUp";
 import { ieee, iedc, nss, arc, logo } from "../../Assets";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import slotService from "../../Services/service";
-import { RiAdminLine } from "react-icons/ri";
 import {
   arcProfile,
   ieeeProfile,
@@ -26,6 +22,7 @@ import ForumAdmin from "../Admin/ForumAdmin";
 import Welcome from "../Welcome/Welcome.jsx";
 import { LuUser } from "react-icons/lu";
 import { RiHome2Line } from "react-icons/ri";
+import top_logo from "../../Assets/top_logo.png";
 
 const LOCAL_STORAGE_KEY = "loginuser";
 
@@ -223,8 +220,8 @@ function About() {
           <Link
             to={"/sign"}
             style={{
-              width: "70px",
-              height: "30px",
+              width: "75px",
+              height: "40px",
               border: "1px solid gray",
               borderRadius: "8px",
               background: "transparent",
@@ -243,8 +240,14 @@ function About() {
         <nav className="nav">
           <div>
             <a href="#" className="nav_link">
-              <PiCalendarCheckFill />
-              <span className="nav_logo-name">Venue Now</span>
+              <img
+                src={top_logo}
+                style={{ width: "50px", height: "50px", marginLeft: "-15px" }}
+                alt=""
+              />
+              <span className="nav_logo-name" style={{ marginLeft: "-20px" }}>
+                Venue Now
+              </span>
             </a>
             <div className="nav_list">
               {/* <Link to={"/sign"} className="nav_link">

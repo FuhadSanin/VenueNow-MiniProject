@@ -7,10 +7,6 @@ import {
   MDBCardText,
   MDBCardBody,
   MDBCardImage,
-  MDBBtn,
-  MDBProgress,
-  MDBProgressBar,
-  MDBIcon,
   MDBListGroup,
   MDBListGroupItem,
   MDBCardTitle,
@@ -43,24 +39,7 @@ export default function ProfilePage({ profile, events }) {
                   {profile.name} Student Branch of College of Engineering
                 </p>
                 <p className="text-muted mb-4">Chengannur, Alappuzha</p>
-                <div className="d-flex justify-content-center mb-2">
-                  <MDBBtn
-                    tag="a"
-                    color="none"
-                    className="m-1"
-                    style={{ color: "#3b5998" }}
-                  >
-                    <MDBIcon fab icon="facebook-f" size="lg" />
-                  </MDBBtn>
-                  <MDBBtn
-                    tag="a"
-                    color="none"
-                    className="m-1"
-                    style={{ color: "#55acee" }}
-                  >
-                    <MDBIcon fab icon="twitter" size="lg" />
-                  </MDBBtn>
-                </div>
+                <div className="d-flex justify-content-center mb-2"></div>
               </MDBCardBody>
             </MDBCard>
 
@@ -72,7 +51,7 @@ export default function ProfilePage({ profile, events }) {
                       style={{
                         width: "26px",
                         height: "26px",
-                        color: "#3b5998",
+                        color: "#22223b",
                       }}
                     />
 
@@ -83,7 +62,7 @@ export default function ProfilePage({ profile, events }) {
                       style={{
                         width: "26px",
                         height: "26px",
-                        color: "#3b5998",
+                        color: "#22223b",
                       }}
                     />
                     <MDBCardText>LinkedIn</MDBCardText>
@@ -93,7 +72,7 @@ export default function ProfilePage({ profile, events }) {
                       style={{
                         width: "26px",
                         height: "26px",
-                        color: "#3b5998",
+                        color: "#22223b",
                       }}
                     />
 
@@ -104,7 +83,7 @@ export default function ProfilePage({ profile, events }) {
                       style={{
                         width: "26px",
                         height: "26px",
-                        color: "#3b5998",
+                        color: "#22223b",
                       }}
                     />
                     <MDBCardText>Facebook</MDBCardText>
